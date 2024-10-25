@@ -6,29 +6,25 @@ import java.util.Arrays;
 
 public class OptionsParser {
 
-    public static MoveDirection[] parse(String[] args) {
-        MoveDirection[] _table = new MoveDirection[args.length];
+    public static MoveDirection[] parse(String[] directions) {
+        MoveDirection[] table = new MoveDirection[directions.length];
         int j = 0;
-        for(String arg : args) {
-            switch (arg) {
+        for(String maybe_move_direction : directions) {
+            switch (maybe_move_direction) {
                 case "f":
-                    _table[j] = MoveDirection.FORWARD;
-                    j++;
+                    table[j++] = MoveDirection.FORWARD;
                     break;
                 case "b":
-                    _table [j] = MoveDirection.BACKWARD;
-                    j++;
+                    table [j++] = MoveDirection.BACKWARD;
                     break;
                 case "r":
-                    _table[j] = MoveDirection.RIGHT;
-                    j++;
+                    table[j++] = MoveDirection.RIGHT;
                     break;
                 case "l":
-                    _table[j] = MoveDirection.LEFT;
-                    j++;
+                    table[j++] = MoveDirection.LEFT;
                     break;
             }
         }
-        return Arrays.copyOfRange(_table, 0, j);
+        return Arrays.copyOfRange(table, 0, j);
     }
 }

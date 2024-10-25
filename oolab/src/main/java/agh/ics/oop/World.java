@@ -9,7 +9,7 @@ public class World {
         System.out.println("system zakończył działanie");
     }
 
-    public static void run(MoveDirection[] directions) {
+    private static void run(MoveDirection[] directions) {
         System.out.println("Start");
 
         for (MoveDirection direction : directions) {
