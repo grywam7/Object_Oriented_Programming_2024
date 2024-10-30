@@ -11,18 +11,10 @@ public class OptionsParser {
         int j = 0;
         for(String maybe_move_direction : directions) {
             switch (maybe_move_direction) {
-                case "f":
-                    table[j++] = MoveDirection.FORWARD;
-                    break;
-                case "b":
-                    table [j++] = MoveDirection.BACKWARD;
-                    break;
-                case "r":
-                    table[j++] = MoveDirection.RIGHT;
-                    break;
-                case "l":
-                    table[j++] = MoveDirection.LEFT;
-                    break;
+                case "f" -> table[j++] = MoveDirection.FORWARD;
+                case "b" -> table [j++] = MoveDirection.BACKWARD;
+                case "r" -> table[j++] = MoveDirection.RIGHT;
+                case "l" -> table[j++] = MoveDirection.LEFT;
             }
         }
         return Arrays.copyOfRange(table, 0, j);
