@@ -31,12 +31,17 @@ public enum MapDirection {
         };
     }
 
+    private final static Vector2d northVector = new Vector2d(1,0);
+    private final static Vector2d eastVector = new Vector2d(0,1);
+    private final static Vector2d southVector = new Vector2d(-1,0);
+    private final static Vector2d westVector = new Vector2d(0,-1);
+
     public Vector2d toUnitVector(MapDirection direction){
         return switch (direction) {
-            case NORTH -> new Vector2d(1,0);
-            case EAST -> new Vector2d(0,1);
-            case SOUTH -> new Vector2d(-1,0);
-            case WEST -> new Vector2d(0,-1);
+            case NORTH -> northVector;
+            case EAST -> eastVector;
+            case SOUTH -> southVector;
+            case WEST -> westVector;
         };
     }
 }
