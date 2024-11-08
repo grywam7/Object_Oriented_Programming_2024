@@ -3,6 +3,8 @@ package agh.ics.oop;
 import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.MoveDirection;
 import agh.ics.oop.model.Vector2d;
+
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 
@@ -44,7 +46,7 @@ public class Simulation {
         }
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
+    List<Animal> getAnimals() {
+        return Collections.unmodifiableList(animals);
     }
 }

@@ -8,9 +8,9 @@ import java.util.Map;
 public class Animal {
     private MapDirection direction;
     private Vector2d position;
-    private final static Vector2d vector0x0 = new Vector2d(0,0);
-    private final static Vector2d vector2x2 = new Vector2d(2,2);
-    private final static Vector2d vector4x4 = new Vector2d(4,4);
+    private final static Vector2d leftBottomMapCorner = new Vector2d(0,0);
+    private final static Vector2d newAnimalStartingPosition = new Vector2d(2,2);
+    private final static Vector2d rightTopMapCorner = new Vector2d(4,4);
 
     public Animal(Vector2d position){
         this.direction = MapDirection.NORTH;
@@ -18,7 +18,7 @@ public class Animal {
     }
 
     public Animal(){
-        this(vector2x2);
+        this(newAnimalStartingPosition);
     }
 
     public Vector2d getPosition() {
@@ -48,7 +48,7 @@ public class Animal {
 
     private void moveForward(MapDirection direction){
         Vector2d unverifiedPosition = position.add(direction.toUnitVector());
-        if(unverifiedPosition.precedes(vector4x4) && unverifiedPosition.follows(vector0x0)){
+        if(unverifiedPosition.precedes(rightTopMapCorner) && unverifiedPosition.follows(leftBottomMapCorner)){
             this.position = unverifiedPosition;
         };
     }
