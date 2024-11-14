@@ -1,24 +1,26 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.*;
 
 import java.util.Collections;
-import java.util.regex.Pattern;
-
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Simulation {
     private final List<Animal> animals;
     private final List<MoveDirection> directions;
+    private final WorldMap map;
 
-    public Simulation(List<Vector2d> positions,List<MoveDirection> directions){
+    public Simulation(WorldMap map, List<Vector2d> positions,List<MoveDirection> directions){
+        this.map = map;
         List<Animal> animals = new ArrayList<>();
         for(Vector2d onePosition : positions){
-            animals.add(new Animal(onePosition));
+            Animal animal = new Animal(onePosition);
+            if (map.place(animal)) {
+                animals.add(animal);
+            } else {
+                System.out.printf("Zwierzak na pozycji %s, ryczy: \"WON ZAJENTE!\"\n", onePosition);
+            }
         }
         this.animals = animals;
         this.directions = directions;
@@ -26,23 +28,10 @@ public class Simulation {
 
     public void run(){
         int amountOfAnimals = animals.size();
-        for(int i = 0; i < directions.size(); i++){
-            Animal animal = animals.get(i%amountOfAnimals);
-            animal.move(directions.get(i));
-            System.out.printf("Zwierzę %d : %s\n",amountOfAnimals,animal.getPosition());
-//          inna opcja wypisania tego (jezeli chce sie zrobic zgodnie z instrukcja zadania, to jest uzyc toString
-//          przygotowanego wcześniej: (moze własnie o to chodziło??)
-//
-//            System.out.printf(
-//                String.format(
-//                    "Zwierzę %d :%s%n",
-//                    i%amountOfAnimals,
-//                    animal.toString().replaceAll(
-//                            Pattern.quote(animal.getDirection().toString() + ","),
-//                            ""
-//                    )
-//                )
-//            );
+        for(int index = 0; index < directions.size(); index++){ // czemu zmiana na index z i? bo i%amountOfAnimals juz 3 raz mysle ze jest zle
+            Animal animal = animals.get(index % amountOfAnimals); // % <-> modulo
+            map.move(animal, directions.get(index));
+            System.out.printf(map.toString());
         }
     }
 
