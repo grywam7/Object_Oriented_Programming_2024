@@ -2,11 +2,26 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.MoveDirection;
 import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.RectangularMap;
+import agh.ics.oop.model.Animal;
+
+
 import org.junit.jupiter.api.Test;
-import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 class SimulationTest {
+
+    private Simulation simulation;
+    private RectangularMap map;
+
+    @BeforeEach
+    void setUp() {
+        map = new RectangularMap(5, 5);
+    }
 
     @Test
     void simulateBasicMoves (){
@@ -14,13 +29,13 @@ class SimulationTest {
         List<MoveDirection> directions = OptionsParser.parse(new String[] {"f","r","b","l"});
         Vector2d startingVector = new Vector2d(2,2);
         List<Vector2d> positions = List.of(startingVector, startingVector, startingVector, startingVector);
-        Simulation simulation = new Simulation(positions, directions);
+        simulation = new Simulation(map, positions, directions);
 
         //when
         simulation.run();
 
         //then
-        assertEquals("[Północ, (2,3), Wschód, (2,2), Północ, (2,1), Zachód, (2,2)]",
+        assertEquals("[N]",
             simulation.getAnimals().toString()
         );
     }
@@ -30,13 +45,13 @@ class SimulationTest {
         //given
         List<MoveDirection> directions = OptionsParser.parse(new String[] {"f","f","f","f","f","f","f","f","f","f"});
         List<Vector2d> positions = List.of(new Vector2d(0,0));
-        Simulation simulation = new Simulation(positions, directions);
+        simulation = new Simulation(map, positions, directions);
 
         //when
         simulation.run();
 
         //then
-        assertEquals("[Północ, (0,4)]", simulation.getAnimals().toString());
+        assertEquals("[N]", simulation.getAnimals().toString());
     }
 
     @Test
@@ -44,13 +59,13 @@ class SimulationTest {
         //given
         List<MoveDirection> directions = OptionsParser.parse(new String[] {"r","f","f","f","f","f","f","f","f","f"});
         List<Vector2d> positions = List.of(new Vector2d(0,0));
-        Simulation simulation = new Simulation(positions, directions);
+        simulation = new Simulation(map, positions, directions);
 
         //when
         simulation.run();
 
         //then
-        assertEquals("[Wschód, (4,0)]", simulation.getAnimals().toString());
+        assertEquals("[E]", simulation.getAnimals().toString());
     }
 
     @Test
@@ -58,13 +73,13 @@ class SimulationTest {
         //given
         List<MoveDirection> directions = OptionsParser.parse(new String[] {"r","r","f","f","f","f","f","f","f","f"});
         List<Vector2d> positions = List.of(new Vector2d(0,4));
-        Simulation simulation = new Simulation(positions, directions);
+        simulation = new Simulation(map, positions, directions);
 
         //when
         simulation.run();
 
         //then
-        assertEquals("[Południe, (0,0)]", simulation.getAnimals().toString());
+        assertEquals("[S]", simulation.getAnimals().toString());
     }
 
     @Test
@@ -72,13 +87,13 @@ class SimulationTest {
         //given
         List<MoveDirection> directions = OptionsParser.parse(new String[] {"l","f","f","f","f","f","f","f","f","f"});
         List<Vector2d> positions = List.of(new Vector2d(4,0));
-        Simulation simulation = new Simulation(positions, directions);
+        simulation = new Simulation(map, positions, directions);
 
         //when
         simulation.run();
 
         //then
-        assertEquals("[Zachód, (0,0)]", simulation.getAnimals().toString());
+        assertEquals("[W]", simulation.getAnimals().toString());
     }
 
     @Test
@@ -90,13 +105,13 @@ class SimulationTest {
             "b","b","r",
             "b","b"});
         List<Vector2d> positions = List.of(new Vector2d(0,0));
-        Simulation simulation = new Simulation(positions, directions);
+        simulation = new Simulation(map, positions, directions);
 
         //when
         simulation.run();
 
         //then
-        assertEquals("[Wschód, (0,0)]", simulation.getAnimals().toString());
+        assertEquals("[E]", simulation.getAnimals().toString());
     }
 
     @Test
@@ -108,14 +123,14 @@ class SimulationTest {
             "f","f","f","f"});
         Vector2d startingVector = new Vector2d(2,2);
         List<Vector2d> positions = List.of(startingVector, startingVector, startingVector, startingVector);
-        Simulation simulation = new Simulation(positions, directions);
+        simulation = new Simulation(map, positions, directions);
 
         //when
         simulation.run();
 
         //then
         assertEquals(
-            "[Północ, (2,4), Wschód, (4,2), Południe, (2,1), Zachód, (0,2)]",
+            "[S]",
             simulation.getAnimals().toString()
         );
     }
@@ -131,18 +146,85 @@ class SimulationTest {
         List<Vector2d> positions = List.of(
             new Vector2d(2, -1),
             new Vector2d(-1,2),
-            new Vector2d(2,5),
-            new Vector2d(5, 2)
+            new Vector2d(2,4),
+            new Vector2d(4, 2)
         );
-        Simulation simulation = new Simulation(positions, directions);
+        simulation = new Simulation(map, positions, directions);
 
         //when
         simulation.run();
 
         //then - expect invaders to correctly move into map
         assertEquals(
-                "[Północ, (2,2), Wschód, (1,2), Południe, (2,4), Zachód, (3,2)]",
+                "[S, N]",
                 simulation.getAnimals().toString()
         );
+    }
+
+    @Test
+    void testAnimalPlacement() {
+        // given
+        List<Vector2d> positions = Arrays.asList(new Vector2d(2, 2), new Vector2d(3, 3));
+        List<MoveDirection> directions = List.of(MoveDirection.FORWARD);
+        simulation = new Simulation(map, positions, directions);
+
+        //when
+        List<Animal> animals = simulation.getAnimals();
+
+        //then
+        assertEquals(2, animals.size());
+        assertTrue(map.isOccupied(new Vector2d(2, 2)));
+        assertTrue(map.isOccupied(new Vector2d(3, 3)));
+    }
+
+    @Test
+    void testMoveAndBoundaryCheck() {
+        // given
+        List<Vector2d> positions = List.of(new Vector2d(0, 0));
+        List<MoveDirection> directions = OptionsParser.parse(new String[] {"f","f","f","f","f","r","f","f","f","f"});
+        simulation = new Simulation(map, positions, directions);
+
+        //when
+        simulation.run();
+
+        //then
+        Animal animal = simulation.getAnimals().getFirst();
+        assertTrue(animal.getPosition().precedes(new Vector2d(4, 4)) && animal.getPosition().follows(new Vector2d(0, 0)));
+    }
+
+    @Test
+    void testCollisionPrevention() {
+        //given
+        List<Vector2d> positions = Arrays.asList(new Vector2d(2, 2), new Vector2d(3, 2));
+        List<MoveDirection> directions = Arrays.asList(MoveDirection.FORWARD, MoveDirection.FORWARD);
+        simulation = new Simulation(map, positions, directions);
+
+        //when
+        simulation.run();
+
+        //then
+        Animal animal1 = simulation.getAnimals().get(0);
+        Animal animal2 = simulation.getAnimals().get(1);
+        assertNotEquals(animal1.getPosition(), animal2.getPosition());
+    }
+
+    @Test
+    void testMapStateAfterMovement() {
+        //given
+        List<Vector2d> positions = List.of(new Vector2d(1, 1), new Vector2d(4, 4));
+        List<MoveDirection> directions = Arrays.asList(
+                MoveDirection.FORWARD, MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.FORWARD
+        );
+        simulation = new Simulation(map, positions, directions);
+
+        //when
+        simulation.run();
+
+        //then
+        Animal animal1 = simulation.getAnimals().get(0);
+        Animal animal2 = simulation.getAnimals().get(1);
+
+        assertEquals(new Vector2d(1, 3), animal1.getPosition());
+        assertEquals(new Vector2d(3, 4), animal2.getPosition());
     }
 }
