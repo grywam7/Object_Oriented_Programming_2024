@@ -45,21 +45,4 @@ public class Animal {
             this.position = newPosition;
         }
     }
-
-//    public void move(MoveDirection direction) {
-//        switch (direction) {
-//            case LEFT -> this.direction = this.direction.previous();
-//            case RIGHT -> this.direction = this.direction.next();
-//            case FORWARD -> moveForward(this.direction);
-//            case BACKWARD -> moveForward(this.direction.next().next());
-//        }
-//    }
-//
-//    private void moveForward(MapDirection direction){
-//        Vector2d unverifiedPosition = position.add(direction.toUnitVector());
-//        if(unverifiedPosition.precedes(rightTopMapCorner) && unverifiedPosition.follows(leftBottomMapCorner)){
-//            this.position = unverifiedPosition;
-//        };
-//    }
-//
 }
