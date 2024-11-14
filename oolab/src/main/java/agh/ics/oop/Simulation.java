@@ -1,6 +1,6 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.*;
+import agh.ics.oop.model.*; //to pewnie jest źle, ale w sumie to czemu?
 
 import java.util.Collections;
 import java.util.ArrayList;
