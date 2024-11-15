@@ -34,13 +34,13 @@ public class Animal {
         switch (moveDirection) {
             case LEFT -> this.direction = this.direction.previous();
             case RIGHT -> this.direction = this.direction.next();
-            case FORWARD -> moveForwardIfValid(this.direction, validator);
-            case BACKWARD -> moveForwardIfValid(this.direction.next().next(), validator);
+            case FORWARD -> moveByVectorIfValid(this.direction.toUnitVector(), validator);
+            case BACKWARD -> moveByVectorIfValid(this.direction.toUnitVector().opposite(), validator);
         }
     }
 
-    private void moveForwardIfValid(MapDirection direction, MoveValidator validator) {
-        Vector2d newPosition = position.add(direction.toUnitVector());
+    private void moveByVectorIfValid(Vector2d vector, MoveValidator validator) {
+        Vector2d newPosition = position.add(vector);
         if (validator.canMoveTo(newPosition)) {
             this.position = newPosition;
         }

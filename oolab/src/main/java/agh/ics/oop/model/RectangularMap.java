@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RectangularMap implements WorldMap {
-    private Map<Vector2d, Animal> animals = new HashMap<>();
+    private final Map<Vector2d, Animal> animals = new HashMap<>();
     private final Vector2d rightTopMapCorner;
     private final Vector2d leftBottomMapCorner = new Vector2d(0,0);
-
+    private final MapVisualizer visualizer = new MapVisualizer(this);
 
     public RectangularMap(int width, int height){
         rightTopMapCorner = new Vector2d(width-1, height-1);
@@ -46,14 +46,24 @@ public class RectangularMap implements WorldMap {
         Vector2d oldPosition = animal.getPosition();
         MapDirection oldMapDirection = animal.getDirection();
         animal.move(direction, this);
-        if(oldPosition.equals(animal.getPosition()) || oldMapDirection.equals(animal.getDirection())){
+        if(!oldPosition.equals(animal.getPosition())){
             animals.remove(oldPosition);
             animals.put(animal.getPosition(), animal);
         }
     }
 
     public String toString() {
-        MapVisualizer visualizer = new MapVisualizer(this);
         return visualizer.draw(leftBottomMapCorner, rightTopMapCorner);
     }
 }
+
+//co powienna zaweirac klasa abstrakcyjna
+// co z metodami ktore maja jakas czesc wwspolna ale nie jednakowa?
+// czy wspolrzedne rogow grassfield miozna i wazrto zapamietac? (czy mozna rogi z poprzedniego ywyolania zapamietac)
+// czy mozemy zmodyfikowac interfejs ktory dostalismy. raczej nie bo cos innego mozemy popsuc
+// nie robimy geteow do kolekcji
+// punk 11 instrukcji @2up (mamy zmodyfikować jak kazą)
+// w losowosci seed?
+// testowac czy jest n traw w danym zakresie
+
+
