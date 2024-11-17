@@ -19,7 +19,7 @@ class RandomPositionGenerator implements Iterable<Vector2d> {
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         this.grassCount = grassCount;
-        availablePositionsCount = maxHeight * maxHeight;
+        availablePositionsCount = maxHeight * maxWidth;
         
         for (int i = 0; i < availablePositionsCount; i++) {
             availablePositions.add(i);
