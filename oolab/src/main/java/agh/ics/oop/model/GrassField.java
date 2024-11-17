@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import java.util.NoSuchElementException;
 import java.util.Iterator;
 import org.apache.commons.collections4.list.TreeList;
 import static java.lang.Math.random;
@@ -9,7 +10,6 @@ public class GrassField implements WorldMap{
 
 class RandomPositionGenerator implements Iterable<Vector2d> {
 
-    private int availablePositionsCount;
     private final int maxWidth;
     private final int maxHeight;
     private final int grassCount;
@@ -19,9 +19,8 @@ class RandomPositionGenerator implements Iterable<Vector2d> {
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         this.grassCount = grassCount;
-        availablePositionsCount = maxHeight * maxWidth;
         
-        for (int i = 0; i < availablePositionsCount; i++) {
+        for (int i = 0; i < maxHeight * maxWidth; i++) {
             availablePositions.add(i);
         }
     }
@@ -33,7 +32,7 @@ class RandomPositionGenerator implements Iterable<Vector2d> {
     
     private Vector2d positionIndexToVector(Integer positionIndex){
         int x = positionIndex % maxWidth;
-        int y = positionIndex / maxHeight;
+        int y = positionIndex / maxWidth;
         return new Vector2d(x,y);
     }
 
@@ -43,20 +42,19 @@ class RandomPositionGenerator implements Iterable<Vector2d> {
 
         @Override
         public boolean hasNext() {
-            return availablePositionsCount > 0 && grassCount > positionsGenerated;
+            return !availablePositions.isEmpty() && grassCount > positionsGenerated;
         }
 
         @Override
         public Vector2d next() {
             if (!hasNext()) {
-                return null;
+                throw new NoSuchElementException("No more positions to generate");
             }
 
             positionsGenerated++;
-            availablePositionsCount--;
             return positionIndexToVector(
                 availablePositions.remove(
-                    (int) ((availablePositionsCount - positionsGenerated - 1) * random())
+                    (int) (availablePositions.size() * random())
                 )
             );
         }
