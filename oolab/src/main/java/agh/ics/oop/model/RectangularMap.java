@@ -1,55 +1,22 @@
 package agh.ics.oop.model;
 
+
 import agh.ics.oop.model.util.MapVisualizer;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
-public class RectangularMap implements WorldMap {
-    private final Map<Vector2d, Animal> animals = new HashMap<>();
+public class RectangularMap extends AbstractWorldMap {
     private final Vector2d rightTopMapCorner;
     private final Vector2d leftBottomMapCorner = new Vector2d(0,0);
-    private final MapVisualizer visualizer = new MapVisualizer(this);
 
     public RectangularMap(int width, int height){
         rightTopMapCorner = new Vector2d(width-1, height-1);
     }
 
     @Override
-    public boolean isOccupied(Vector2d position){
-        return animals.containsKey(position);
-    }
-
-    @Override
-    public Animal objectAt(Vector2d position) {
-        return animals.get(position);
-    }
-
-    @Override
     public boolean canMoveTo(Vector2d vectorToCheck) {
-        return vectorToCheck.precedes(rightTopMapCorner) && vectorToCheck.follows(leftBottomMapCorner) && !isOccupied(vectorToCheck);
-    }
-
-    @Override
-    public boolean place(Animal animal){
-        Vector2d newAnimalPosition = animal.getPosition();
-
-        if( canMoveTo(newAnimalPosition) ){
-            animals.put(animal.getPosition(),animal);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void move(Animal animal, MoveDirection direction) {
-        Vector2d oldPosition = animal.getPosition();
-        MapDirection oldMapDirection = animal.getDirection();
-        animal.move(direction, this);
-        if(!oldPosition.equals(animal.getPosition())){
-            animals.remove(oldPosition);
-            animals.put(animal.getPosition(), animal);
-        }
+        return vectorToCheck.precedes(rightTopMapCorner) && vectorToCheck.follows(leftBottomMapCorner) && super.canMoveTo(vectorToCheck);
     }
 
     public String toString() {

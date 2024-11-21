@@ -1,11 +1,72 @@
 package agh.ics.oop.model;
 
-import java.util.NoSuchElementException;
-import java.util.Iterator;
+import java.util.*;
+
 import org.apache.commons.collections4.list.TreeList;
 import static java.lang.Math.random;
 
-public class GrassField implements WorldMap{
+public class GrassField extends AbstractWorldMap{
+    private final Map<Vector2d, Grass> grasses = new HashMap<>();
+    private final Vector2d vector0 = new Vector2d(0,0);
+
+    public GrassField(int grassFields){
+        placeGrass(grassFields);
+    }
+
+    Map<Vector2d, Grass> getGrasses() {
+        return Collections.unmodifiableMap(grasses);
+    }
+
+    @Override
+    public WorldElement objectAt(Vector2d position) {
+        WorldElement animal = super.objectAt(position);
+        return animal != null ? animal : grasses.get(position);
+    }
+
+    @Override
+    public boolean isOccupied(Vector2d position) {
+        return grasses.containsKey(position) || super.isOccupied(position);
+    }
+
+    public void placeGrass(int grassCount) {
+        int maxSize = (int) Math.sqrt(grassCount * 10);
+        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(maxSize, maxSize, grassCount);
+
+        for (Vector2d grassPosition : randomPositionGenerator) {
+            grasses.put(grassPosition, new Grass(grassPosition));
+        }
+    }
+
+    public String toString(){
+        Vector2d[] corners = mapCorners();
+        return visualizer.draw(corners[0], corners[1]);
+    }
+
+    @Override
+    public Map<Vector2d, WorldElement> getElements() {
+        Map<Vector2d, WorldElement> combinedElements = new HashMap<>(super.getElements());
+        combinedElements.putAll(grasses);
+        return Collections.unmodifiableMap(combinedElements);
+    }
+
+     Vector2d[] mapCorners() {
+        final Vector2d[] corners = new Vector2d[] { null, null };
+        if( grasses.isEmpty() && animals.isEmpty()){
+            corners[0] = vector0;
+            corners[1] = vector0;
+        } else {
+            updateCorners(corners, grasses.keySet());
+            updateCorners(corners, animals.keySet());
+        }
+        return corners;
+    }
+
+    private void updateCorners(Vector2d[] corners, Set<Vector2d> vectors) {
+        for (Vector2d vector : vectors) {
+            corners[0] = corners[0] == null ? vector : corners[0].lowerLeft(vector);
+            corners[1] = corners[1] == null ? vector : corners[1].upperRight(vector);
+        }
+    }
 }
 
 class RandomPositionGenerator implements Iterable<Vector2d> {
