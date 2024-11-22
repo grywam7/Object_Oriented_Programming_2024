@@ -1,8 +1,7 @@
 package agh.ics.oop.model;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
 import agh.ics.oop.model.util.MapVisualizer;
 
 public abstract class AbstractWorldMap implements WorldMap {
@@ -53,7 +52,16 @@ public abstract class AbstractWorldMap implements WorldMap {
     public abstract String toString();
 
     @Override
-    public Map<Vector2d, WorldElement> getElements(){
-        return Collections.unmodifiableMap(animals);
+    public Collection<WorldElement> getElements(){
+        return Collections.unmodifiableCollection(animals.values());
     }
 }
+
+
+// kto jest odpowiedzialny za rzucenie wyjątku PositionAlreadyOcuupiedException? dlaczego
+//czy throw moze znajdować się bezpośrednio w bloku try?
+// kto jest  odpoweiedzialny zza dodawanie ma[y do obserwatorow zwierzecia ldaczego
+//czy warto stworzyc w zwoerzeciu metode ktora notufikuje wszystkich obserwatorów
+//jeslo tal to z jaka sugnatura ( modyfikator dostepu  nazwa patamety
+// cp przechowyje boudnry ? zwierzeia czy tylko ich ozycje
+// kto przeohowuje boundry

@@ -13,6 +13,7 @@ public class GrassField extends AbstractWorldMap{
         placeGrass(grassFields);
     }
 
+    // for test use only
     Map<Vector2d, Grass> getGrasses() {
         return Collections.unmodifiableMap(grasses);
     }
@@ -25,7 +26,7 @@ public class GrassField extends AbstractWorldMap{
 
     @Override
     public boolean isOccupied(Vector2d position) {
-        return grasses.containsKey(position) || super.isOccupied(position);
+        return super.isOccupied(position) || grasses.containsKey(position);
     }
 
     public void placeGrass(int grassCount) {
@@ -38,18 +39,18 @@ public class GrassField extends AbstractWorldMap{
     }
 
     public String toString(){
-        Vector2d[] corners = mapCorners();
+        Vector2d[] corners = getMapCorners();
         return visualizer.draw(corners[0], corners[1]);
     }
 
     @Override
-    public Map<Vector2d, WorldElement> getElements() {
-        Map<Vector2d, WorldElement> combinedElements = new HashMap<>(super.getElements());
-        combinedElements.putAll(grasses);
-        return Collections.unmodifiableMap(combinedElements);
+    public Collection<WorldElement> getElements() {
+        Collection<WorldElement> combinedElements = new ArrayList<>(super.getElements());
+        combinedElements.addAll(grasses.values());
+        return Collections.unmodifiableCollection(combinedElements);
     }
 
-     Vector2d[] mapCorners() {
+     private Vector2d[] getMapCorners() {
         final Vector2d[] corners = new Vector2d[] { null, null };
         if( grasses.isEmpty() && animals.isEmpty()){
             corners[0] = vector0;
