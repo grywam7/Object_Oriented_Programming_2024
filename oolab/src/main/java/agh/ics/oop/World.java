@@ -21,9 +21,12 @@ public class World {
 
         List<MoveDirection> directions = OptionsParser.parse(args);
         List<Vector2d> positions = List.of(new Vector2d(2,2), new Vector2d(3,4));
-        RectangularMap map = new RectangularMap(10,10);
+//        RectangularMap map = new RectangularMap(10,10);
+        GrassField map = new GrassField(10);
         Simulation simulation = new Simulation(map, positions, directions);
+        System.out.println(map.toString());
         simulation.run();
+
     }
 
     private static void run(List<MoveDirection> directions) {
