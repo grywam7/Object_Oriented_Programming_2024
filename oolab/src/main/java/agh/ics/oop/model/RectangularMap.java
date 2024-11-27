@@ -19,8 +19,9 @@ public class RectangularMap extends AbstractWorldMap {
         return vectorToCheck.precedes(rightTopMapCorner) && vectorToCheck.follows(leftBottomMapCorner) && super.canMoveTo(vectorToCheck);
     }
 
-    public String toString() {
-        return visualizer.draw(leftBottomMapCorner, rightTopMapCorner);
+    @Override
+    public Boundary getCurrentBounds() {
+        return new Boundary(leftBottomMapCorner, rightTopMapCorner);
     }
 }
 
