@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*; //to pewnie jest źle, ale w sumie to czemu?
+import agh.ics.oop.model.exceptions.*;
 
 import java.util.Collections;
 import java.util.ArrayList;
@@ -16,10 +17,11 @@ public class Simulation {
         List<Animal> animals = new ArrayList<>();
         for(Vector2d onePosition : positions){
             Animal animal = new Animal(onePosition);
-            if (map.place(animal)) {
+            try {
+                map.place(animal);
                 animals.add(animal);
-            } else {
-                System.out.printf("Zwierzak na pozycji %s, ryczy: \"WON ZAJENTE!\"\n", onePosition);
+            } catch (IncorrectPositionException e) {
+                System.out.printf("Zwierzak na pozycji %s, ryczy: \"WON ZAJENTE!\"\n (%s)\n", onePosition, e.getMessage());
             }
         }
         this.animals = animals;
@@ -28,10 +30,9 @@ public class Simulation {
 
     public void run(){
         int amountOfAnimals = animals.size();
-        for(int index = 0; index < directions.size(); index++){ // czemu zmiana na index z i? bo i%amountOfAnimals juz 3 raz mysle ze jest zle
+        for(int index = 0; index < directions.size(); index++){
             Animal animal = animals.get(index % amountOfAnimals); // % <-> modulo
             map.move(animal, directions.get(index));
-            System.out.printf(map.toString());
         }
     }
 

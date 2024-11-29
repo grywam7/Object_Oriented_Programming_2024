@@ -1,6 +1,8 @@
 package agh.ics.oop.model;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import org.junit.jupiter.api.Test;
 
 
@@ -13,7 +15,7 @@ class RectangularMapTest {
         Animal animal = new Animal();
 
         //when then
-        assertTrue(map.place(animal));
+        assertDoesNotThrow(() -> {map.place(animal);});
     }
 
     @Test
@@ -21,9 +23,14 @@ class RectangularMapTest {
         //given
         RectangularMap map = new RectangularMap(5, 5);
         Animal outOfMapAnimal = new Animal(new Vector2d(5, 5));
+        String expectedMessage = "Position (5, 5) is not correct.";
 
-        //when then
-        assertFalse(map.place(outOfMapAnimal));
+
+        // when & then
+        Exception exception = assertThrows(IncorrectPositionException.class, () -> {
+            map.place(outOfMapAnimal);
+        });
+        assertEquals(expectedMessage, exception.getMessage());
     }
 
     @Test
@@ -31,7 +38,7 @@ class RectangularMapTest {
         //given
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal = new Animal(new Vector2d(0, 0));
-        map.place(animal);
+        assertDoesNotThrow(() -> {map.place(animal);});
 
         //when
         map.move(animal, MoveDirection.BACKWARD);
@@ -45,7 +52,7 @@ class RectangularMapTest {
         //given
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal = new Animal(new Vector2d(0, 0));
-        map.place(animal);
+        assertDoesNotThrow(() -> {map.place(animal);});
 
         //when
         map.move(animal, MoveDirection.LEFT);
@@ -61,8 +68,8 @@ class RectangularMapTest {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal1 = new Animal();
         Animal animal3 = new Animal(new Vector2d(2, 3));
-        map.place(animal3);
-        map.place(animal1);
+        assertDoesNotThrow(() -> {map.place(animal1);});
+        assertDoesNotThrow(() -> {map.place(animal3);});
 
         //when
         map.move(animal3, MoveDirection.BACKWARD);
@@ -77,10 +84,12 @@ class RectangularMapTest {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal1 = new Animal();
         Animal animal2 = new Animal();
-        map.place(animal1);
 
         //when then
-        assertFalse(map.place(animal2));
+        assertDoesNotThrow(() -> {map.place(animal1);});
+        assertThrows(IncorrectPositionException.class, () -> {
+            map.place(animal2);
+        });
     }
 
     @Test
@@ -89,8 +98,8 @@ class RectangularMapTest {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal1 = new Animal();
         Animal animal3 = new Animal(new Vector2d(2, 3));
-        map.place(animal3);
-        map.place(animal1);
+        assertDoesNotThrow(() -> {map.place(animal3);});
+        assertDoesNotThrow(() -> {map.place(animal1);});
 
         //when then
         assertEquals(2, map.getAnimals().size());

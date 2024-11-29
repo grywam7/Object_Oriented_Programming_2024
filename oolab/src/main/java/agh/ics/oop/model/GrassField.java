@@ -2,14 +2,15 @@ package agh.ics.oop.model;
 
 import java.util.*;
 
+import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import org.apache.commons.collections4.list.TreeList;
 import static java.lang.Math.random;
 
-public class GrassField extends AbstractWorldMap{
+public class GrassField extends AbstractWorldMap {
     private final Map<Vector2d, Grass> grasses = new HashMap<>();
-    private final Vector2d vector0 = new Vector2d(0,0);
+    private final Vector2d vector0 = new Vector2d(0, 0);
 
-    public GrassField(int grassFields){
+    public GrassField(int grassFields) {
         placeGrass(grassFields);
     }
 
@@ -29,18 +30,15 @@ public class GrassField extends AbstractWorldMap{
         return super.isOccupied(position) || grasses.containsKey(position);
     }
 
-    public void placeGrass(int grassCount) {
+    private void placeGrass(int grassCount) {
         int maxSize = (int) Math.sqrt(grassCount * 10);
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(maxSize, maxSize, grassCount);
 
         for (Vector2d grassPosition : randomPositionGenerator) {
-            grasses.put(grassPosition, new Grass(grassPosition));
+            if (!grasses.containsKey(grassPosition)) {
+                grasses.put(grassPosition, new Grass(grassPosition));
+            }
         }
-    }
-
-    public String toString(){
-        Vector2d[] corners = getMapCorners();
-        return visualizer.draw(corners[0], corners[1]);
     }
 
     @Override
@@ -50,16 +48,17 @@ public class GrassField extends AbstractWorldMap{
         return Collections.unmodifiableCollection(combinedElements);
     }
 
-     private Vector2d[] getMapCorners() {
-        final Vector2d[] corners = new Vector2d[] { null, null };
-        if( grasses.isEmpty() && animals.isEmpty()){
+    @Override
+    public Boundary getCurrentBounds() {
+        final Vector2d[] corners = new Vector2d[]{null, null};
+        if (grasses.isEmpty() && animals.isEmpty()) {
             corners[0] = vector0;
             corners[1] = vector0;
         } else {
             updateCorners(corners, grasses.keySet());
             updateCorners(corners, animals.keySet());
         }
-        return corners;
+        return new Boundary(corners[0], corners[1]);
     }
 
     private void updateCorners(Vector2d[] corners, Set<Vector2d> vectors) {

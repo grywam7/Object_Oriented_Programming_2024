@@ -3,6 +3,7 @@ package agh.ics.oop;
 import java.util.List;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.exceptions.IncorrectPositionException;
 
 public class World {
     public static void main(String[] args) {
@@ -19,14 +20,27 @@ public class World {
         Animal animal = new Animal();
         System.out.println(animal);
 
-        List<MoveDirection> directions = OptionsParser.parse(args);
-        List<Vector2d> positions = List.of(new Vector2d(2,2), new Vector2d(3,4));
-//        RectangularMap map = new RectangularMap(10,10);
-        GrassField map = new GrassField(10);
-        Simulation simulation = new Simulation(map, positions, directions);
-        System.out.println(map.toString());
-        simulation.run();
+        try {
+            List<MoveDirection> directions = OptionsParser.parse(args);
 
+            List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
+
+
+            GrassField map;
+            map = new GrassField(10);
+
+            ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
+            map.addObserver(consoleDisplay);
+
+            Simulation simulation = new Simulation(map, positions, directions);
+//          System.out.println(map.toString());
+
+            simulation.run();
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Błąd: " + e.getMessage());
+            System.err.println("System zakończył działanie z błędem.");
+        }
     }
 
     private static void run(List<MoveDirection> directions) {

@@ -2,24 +2,39 @@ package agh.ics.oop.model;
 
 import java.util.*;
 
+import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import agh.ics.oop.model.util.MapVisualizer;
 
 public abstract class AbstractWorldMap implements WorldMap {
     protected final Map<Vector2d, Animal> animals = new HashMap<>();
     protected final MapVisualizer visualizer = new MapVisualizer(this);
+    private final List<MapChangeListener> observers = new ArrayList<>();
+
+    public void addObserver(MapChangeListener observer) {
+        observers.add(observer);
+    }
+    public void removeObserver(MapChangeListener observer) {
+        observers.remove(observer);
+    }
+    protected void mapChanged(String message) {
+        for (MapChangeListener observer : observers) {
+            observer.mapChanged(this, message);
+        }
+    }
 
     Map<Vector2d, Animal> getAnimals() {
         return Collections.unmodifiableMap(animals);
     }
 
     @Override
-    public boolean place(Animal animal) {
+    public void place(Animal animal) throws IncorrectPositionException {
         Vector2d newAnimalPosition = animal.getPosition();
         if (canMoveTo(newAnimalPosition)) {
             animals.put(newAnimalPosition, animal);
-            return true;
+            mapChanged("Animal placed at position: " + newAnimalPosition);
+        } else {
+            throw new IncorrectPositionException(newAnimalPosition);
         }
-        return false;
     }
 
     @Override
@@ -30,6 +45,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         if (!oldPosition.equals(newPosition)) {
             animals.remove(oldPosition);
             animals.put(newPosition, animal);
+            mapChanged("Animal moved from " + oldPosition + " to " + newPosition);
         }
     }
 
@@ -48,13 +64,18 @@ public abstract class AbstractWorldMap implements WorldMap {
         return !isOccupied(position);
     }
 
-    @Override
-    public abstract String toString();
+    public String toString() {
+        Boundary bounds = getCurrentBounds();
+        return visualizer.draw(bounds.bottomLeft(), bounds.topRight());
+    }
 
     @Override
     public Collection<WorldElement> getElements(){
         return Collections.unmodifiableCollection(animals.values());
     }
+
+    @Override
+    public abstract Boundary getCurrentBounds();
 }
 
 

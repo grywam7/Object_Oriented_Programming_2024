@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -14,11 +15,13 @@ class GrassFieldTest {
         //given
         int grassCount = 10;
 
-        //when
-        GrassField grassField = new GrassField(grassCount);
+        assertDoesNotThrow(() -> {
+            //when
+            GrassField grassField = new GrassField(grassCount);
 
-        //then
-        assertEquals(grassCount, grassField.getGrasses().size());
+            //then
+            assertEquals(grassCount, grassField.getGrasses().size());
+        });
     }
 
     @Test
@@ -26,104 +29,122 @@ class GrassFieldTest {
         //given
         int grassCount = 10;
 
-        //when
-        GrassField grassField = new GrassField(grassCount);
-        Set<Vector2d> grassPositions = new HashSet<>(grassField.getGrasses().keySet());
+        assertDoesNotThrow(() -> {
+            //when
+            GrassField grassField = new GrassField(grassCount);
+            Set<Vector2d> grassPositions = new HashSet<>(grassField.getGrasses().keySet());
 
-        //then
-        assertEquals(grassCount, grassPositions.size());
+            //then
+            assertEquals(grassCount, grassPositions.size());
+        });
     }
 
     @Test
     public void testPlacingTwoAnimalsInTheSamePosition() {
-        //given
-        GrassField grassField = new GrassField(0);
-        Animal animal1 = new Animal();
-        Animal animal2 = new Animal();
+        assertDoesNotThrow(() -> {
+            //given
+            GrassField grassField = new GrassField(0);
+            Animal animal1 = new Animal();
+            Animal animal2 = new Animal();
 
-        //when then
-        assertTrue(grassField.place(animal1));
-        assertFalse(grassField.place(animal2));
+            //when then
+            assertDoesNotThrow(() -> {grassField.place(animal1);});
+            assertThrows(IncorrectPositionException.class, () -> {
+                grassField.place(animal2);
+            });
+        });
     }
 
     @Test
     public void testIFAnimalsArePlacedInCorrectPosition() {
-        //given
-        GrassField grassField = new GrassField(0);
-        Animal animal1 = new Animal();
+        assertDoesNotThrow(() -> {
+            //given
+            GrassField grassField = new GrassField(0);
+            Animal animal1 = new Animal();
 
-        //when
-        grassField.place(animal1);
+            //when
+            grassField.place(animal1);
 
-        //then
-        assertEquals(animal1, grassField.objectAt(new Vector2d(2, 2)));
+            //then
+            assertEquals(animal1, grassField.objectAt(new Vector2d(2, 2)));
+        });
     }
 
     @Test
     public void testAnimalMovementForward() {
-        //given
-        GrassField grassField = new GrassField(0);
-        Animal animal = new Animal();
+        assertDoesNotThrow(() -> {
+            //given
+            GrassField grassField = new GrassField(0);
+            Animal animal = new Animal();
 
-        //when
-        grassField.place(animal);
-        grassField.move(animal, MoveDirection.FORWARD);
+            //when
+            grassField.place(animal);
+            grassField.move(animal, MoveDirection.FORWARD);
 
-        //then
-        assertEquals(new Vector2d(2, 3), animal.getPosition());
-        grassField.move(animal, MoveDirection.RIGHT);
-        grassField.move(animal, MoveDirection.FORWARD);
-        assertEquals(new Vector2d(3, 3), animal.getPosition());
+            //then
+            assertEquals(new Vector2d(2, 3), animal.getPosition());
+            grassField.move(animal, MoveDirection.RIGHT);
+            grassField.move(animal, MoveDirection.FORWARD);
+            assertEquals(new Vector2d(3, 3), animal.getPosition());
+        });
     }
 
     @Test
     public void testAnimalMovementRightAndForward() {
-        //given
-        GrassField grassField = new GrassField(0);
-        Animal animal = new Animal();
+        assertDoesNotThrow(() -> {
+            //given
+            GrassField grassField = new GrassField(0);
+            Animal animal = new Animal();
 
-        //when
-        grassField.place(animal);
-        grassField.move(animal, MoveDirection.RIGHT);
-        grassField.move(animal, MoveDirection.FORWARD);
-        assertEquals(new Vector2d(3, 2), animal.getPosition());
+            //when
+            grassField.place(animal);
+            grassField.move(animal, MoveDirection.RIGHT);
+            grassField.move(animal, MoveDirection.FORWARD);
+            assertEquals(new Vector2d(3, 2), animal.getPosition());
+        });
     }
 
     @Test
     public void testToStringWithOneAnimal() {
-        //given
-        GrassField grassField = new GrassField(0);
-        Animal animal = new Animal();
+        assertDoesNotThrow(() -> {
+            //given
+            GrassField grassField = new GrassField(0);
+            Animal animal = new Animal();
 
-        //when
-        grassField.place(animal);
+            //when
+            grassField.place(animal);
 
-        //when
-        assertTrue(grassField.toString().contains("N"));
+            //when
+            assertTrue(grassField.toString().contains("N"));
+        });
     }
 
 
     @Test
     public void testToStringWithOneGrass() {
-        //given
-        GrassField grassField = new GrassField(1);
+        assertDoesNotThrow(() -> {
+            //given
+            GrassField grassField = new GrassField(1);
 
-        //when then
-        assertTrue(grassField.toString().contains("*"));
+            //when then
+            assertTrue(grassField.toString().contains("*"));
+        });
     }
 
     @Test
     public void testToStringWithAnimalAndGrass() {
-        //given
-        GrassField grassField = new GrassField(1);
-        Animal animal = new Animal(new Vector2d(10,10));
+        assertDoesNotThrow(() -> {
+            //given
+            GrassField grassField = new GrassField(1);
+            Animal animal = new Animal(new Vector2d(10, 10));
 
-        //when
-        grassField.place(animal);
-        String mapString = grassField.toString();
+            //when
+            grassField.place(animal);
+            String mapString = grassField.toString();
 
-        //then
-        assertTrue(mapString.contains("N"));
-        assertTrue(mapString.contains("*"));
+            //then
+            assertTrue(mapString.contains("N"));
+            assertTrue(mapString.contains("*"));
+        });
     }
 }

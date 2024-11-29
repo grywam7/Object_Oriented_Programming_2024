@@ -25,11 +25,10 @@ class OptionsParserTest {
                 MoveDirection.BACKWARD
         );
 
-        //when
-        List<MoveDirection> parsedDirections = OptionsParser.parse(contaminatedStrings);
-
-        //then
-        assertEquals(expectedResponse, parsedDirections);
+        //when then
+        assertThrows(IllegalArgumentException.class, () -> {
+            OptionsParser.parse(contaminatedStrings);
+        });
     }
 
     @Test
@@ -38,7 +37,9 @@ class OptionsParserTest {
         String[] emptyStrings = {"", "  ", "   ", "\n "};
 
         //when then
-        assertEquals(Collections.emptyList(), OptionsParser.parse(emptyStrings));
+        assertThrows(IllegalArgumentException.class, () -> {
+            OptionsParser.parse(emptyStrings);
+        });
     }
 
     @Test
