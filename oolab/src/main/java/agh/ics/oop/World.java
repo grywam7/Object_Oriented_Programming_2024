@@ -27,18 +27,13 @@ public class World {
 
 
             GrassField map;
-            try {
-                map = new GrassField(10);
+            map = new GrassField(10);
 
-                ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
-                map.addObserver(consoleDisplay);
-            } catch (IncorrectPositionException e) {
-                System.err.println(e.getMessage());
-                return; // Exit the program since map initialization failed (and this wasn't specified in task...)
-            }
+            ConsoleMapDisplay consoleDisplay = new ConsoleMapDisplay();
+            map.addObserver(consoleDisplay);
 
             Simulation simulation = new Simulation(map, positions, directions);
-//            System.out.println(map.toString());
+//          System.out.println(map.toString());
 
             simulation.run();
 

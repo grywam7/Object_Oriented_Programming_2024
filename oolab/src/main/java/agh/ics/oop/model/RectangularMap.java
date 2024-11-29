@@ -1,17 +1,14 @@
 package agh.ics.oop.model;
 
 
-import agh.ics.oop.model.util.MapVisualizer;
-
-import java.util.Collections;
-import java.util.Map;
-
 public class RectangularMap extends AbstractWorldMap {
     private final Vector2d rightTopMapCorner;
     private final Vector2d leftBottomMapCorner = new Vector2d(0,0);
+    private final Boundary mapBounds;
 
     public RectangularMap(int width, int height){
         rightTopMapCorner = new Vector2d(width-1, height-1);
+        mapBounds = new Boundary(leftBottomMapCorner, rightTopMapCorner);
     }
 
     @Override
@@ -21,7 +18,7 @@ public class RectangularMap extends AbstractWorldMap {
 
     @Override
     public Boundary getCurrentBounds() {
-        return new Boundary(leftBottomMapCorner, rightTopMapCorner);
+        return mapBounds;
     }
 }
 
