@@ -1,6 +1,6 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.MoveDirection;
+import agh.ics.oop.model.map_elements.MoveDirection;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Arrays;

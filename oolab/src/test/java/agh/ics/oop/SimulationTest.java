@@ -1,9 +1,9 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.RectangularMap;
-import agh.ics.oop.model.Animal;
+import agh.ics.oop.model.map_elements.MoveDirection;
+import agh.ics.oop.model.map_elements.Vector2d;
+import agh.ics.oop.model.maps.RectangularMap;
+import agh.ics.oop.model.map_elements.Animal;
 
 
 import org.junit.jupiter.api.Test;

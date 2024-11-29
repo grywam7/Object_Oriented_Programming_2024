@@ -1,8 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
 import java.util.*;
 
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
+import agh.ics.oop.model.map_elements.*;
 import agh.ics.oop.model.util.MapVisualizer;
 
 public abstract class AbstractWorldMap implements WorldMap {

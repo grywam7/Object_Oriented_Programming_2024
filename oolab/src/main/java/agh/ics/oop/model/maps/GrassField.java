@@ -1,8 +1,11 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
 import java.util.*;
 
-import agh.ics.oop.model.exceptions.IncorrectPositionException;
+import agh.ics.oop.model.map_elements.Boundary;
+import agh.ics.oop.model.map_elements.Grass;
+import agh.ics.oop.model.map_elements.Vector2d;
+import agh.ics.oop.model.map_elements.WorldElement;
 import org.apache.commons.collections4.list.TreeList;
 import static java.lang.Math.random;
 

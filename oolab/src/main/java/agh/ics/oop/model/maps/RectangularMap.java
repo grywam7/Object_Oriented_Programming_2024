@@ -1,5 +1,8 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
+
+import agh.ics.oop.model.map_elements.Boundary;
+import agh.ics.oop.model.map_elements.Vector2d;
 
 public class RectangularMap extends AbstractWorldMap {
     private final Vector2d rightTopMapCorner;

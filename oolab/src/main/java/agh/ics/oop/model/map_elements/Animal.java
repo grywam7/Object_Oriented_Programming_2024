@@ -1,6 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.map_elements;
 
-public class Animal implements WorldElement{
+public class Animal implements WorldElement {
     private MapDirection direction;
     private Vector2d position;
     private final static Vector2d newAnimalStartingPosition = new Vector2d(2,2);

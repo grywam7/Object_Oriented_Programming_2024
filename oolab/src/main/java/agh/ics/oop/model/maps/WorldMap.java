@@ -1,12 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
+import agh.ics.oop.model.map_elements.*;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * The interface responsible for interacting with the map of the world.

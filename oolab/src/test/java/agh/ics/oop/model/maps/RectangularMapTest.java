@@ -1,8 +1,11 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
+import agh.ics.oop.model.map_elements.MoveDirection;
+import agh.ics.oop.model.map_elements.Vector2d;
+import agh.ics.oop.model.map_elements.Animal;
 import org.junit.jupiter.api.Test;
 
 

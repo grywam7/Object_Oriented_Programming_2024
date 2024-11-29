@@ -1,7 +1,10 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.*; //to pewnie jest źle, ale w sumie to czemu?
 import agh.ics.oop.model.exceptions.*;
+import agh.ics.oop.model.map_elements.MoveDirection;
+import agh.ics.oop.model.map_elements.Vector2d;
+import agh.ics.oop.model.maps.WorldMap;
+import agh.ics.oop.model.map_elements.Animal;
 
 import java.util.Collections;
 import java.util.ArrayList;
@@ -12,7 +15,7 @@ public class Simulation {
     private final List<MoveDirection> directions;
     private final WorldMap map;
 
-    public Simulation(WorldMap map, List<Vector2d> positions,List<MoveDirection> directions){
+    public Simulation(WorldMap map, List<Vector2d> positions, List<MoveDirection> directions){
         this.map = map;
         List<Animal> animals = new ArrayList<>();
         for(Vector2d onePosition : positions){

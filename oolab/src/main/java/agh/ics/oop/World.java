@@ -2,8 +2,11 @@ package agh.ics.oop;
 
 import java.util.List;
 
-import agh.ics.oop.model.*;
-import agh.ics.oop.model.exceptions.IncorrectPositionException;
+import agh.ics.oop.model.map_elements.MoveDirection;
+import agh.ics.oop.model.map_elements.Vector2d;
+import agh.ics.oop.model.maps.ConsoleMapDisplay;
+import agh.ics.oop.model.maps.GrassField;
+import agh.ics.oop.model.map_elements.Animal;
 
 public class World {
     public static void main(String[] args) {
