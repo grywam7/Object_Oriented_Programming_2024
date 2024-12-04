@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Simulation {
+public class Simulation implements Runnable {
     private final List<Animal> animals;
     private final List<MoveDirection> directions;
     private final WorldMap map;
@@ -31,6 +31,7 @@ public class Simulation {
         this.directions = directions;
     }
 
+    @Override
     public void run(){
         int amountOfAnimals = animals.size();
         for(int index = 0; index < directions.size(); index++){

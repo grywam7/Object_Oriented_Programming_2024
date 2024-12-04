@@ -33,6 +33,14 @@ public class GrassField extends AbstractWorldMap {
         return super.isOccupied(position) || grasses.containsKey(position);
     }
 
+    // Method 'canMoveTo()' is identical to its super method
+    // IT IS NOT, we use super.isOccupied, not the override one
+    // because animal can be on grass. and we need isOccupied to correctly display grass positions
+    @Override
+    public boolean canMoveTo(Vector2d position) {
+        return !super.isOccupied(position);
+    }
+
     private void placeGrass(int grassCount) {
         int maxSize = (int) Math.sqrt(grassCount * 10);
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(maxSize, maxSize, grassCount);
