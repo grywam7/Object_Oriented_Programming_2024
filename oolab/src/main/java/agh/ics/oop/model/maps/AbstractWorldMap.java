@@ -83,12 +83,3 @@ public abstract class AbstractWorldMap implements WorldMap {
         return  super.toString();
     }
 }
-
-
-// kto jest odpowiedzialny za rzucenie wyjątku PositionAlreadyOcuupiedException? dlaczego
-//czy throw moze znajdować się bezpośrednio w bloku try?
-// kto jest  odpoweiedzialny zza dodawanie ma[y do obserwatorow zwierzecia ldaczego
-//czy warto stworzyc w zwoerzeciu metode ktora notufikuje wszystkich obserwatorów
-//jeslo tal to z jaka sugnatura ( modyfikator dostepu  nazwa patamety
-// cp przechowyje boudnry ? zwierzeia czy tylko ich ozycje
-// kto przeohowuje boundry
