@@ -35,6 +35,12 @@ public class Simulation implements Runnable {
     public void run(){
         int amountOfAnimals = animals.size();
         for(int index = 0; index < directions.size(); index++){
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                System.out.println("Nawet pospać nie dadzą....");
+                return;
+            }
             Animal animal = animals.get(index % amountOfAnimals); // % <-> modulo
             map.move(animal, directions.get(index));
         }
