@@ -5,6 +5,8 @@ public class Animal implements WorldElement {
     private Vector2d position;
     private final static Vector2d newAnimalStartingPosition = new Vector2d(2,2);
 
+//    liczba dzieci
+
     public Animal(Vector2d position){
         this.direction = MapDirection.NORTH;
         this.position = position;

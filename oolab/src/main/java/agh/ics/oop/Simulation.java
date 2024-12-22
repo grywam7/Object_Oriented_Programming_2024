@@ -15,35 +15,39 @@ public class Simulation implements Runnable {
     private final List<MoveDirection> directions;
     private final WorldMap map;
 
-    public Simulation(WorldMap map, List<Vector2d> positions, List<MoveDirection> directions){
-        this.map = map;
-        List<Animal> animals = new ArrayList<>();
-        for(Vector2d onePosition : positions){
-            Animal animal = new Animal(onePosition);
-            try {
-                map.place(animal);
-                animals.add(animal);
-            } catch (IncorrectPositionException e) {
-                System.out.printf("Zwierzak na pozycji %s, ryczy: \"WON ZAJENTE!\"\n (%s)\n", onePosition, e.getMessage());
-            }
-        }
-        this.animals = animals;
-        this.directions = directions;
-    }
+    // dodac atrybyty z specyfikacji / niektore mozemy chciec miec na mapie, np rozmiawry mapy, rownika itp
 
+//    public Simulation(WorldMap map, List<Vector2d> positions, List<MoveDirection> directions){
+//        this.map = map;
+//        List<Animal> animals = new ArrayList<>();
+//        for(Vector2d onePosition : positions){
+//            Animal animal = new Animal(onePosition);
+//            try {
+//                map.place(animal);
+//                animals.add(animal);
+//            } catch (IncorrectPositionException e) {
+//                System.out.printf("Zwierzak na pozycji %s, ryczy: \"WON ZAJENTE!\"\n (%s)\n", onePosition, e.getMessage());
+//            }
+//        }
+//        this.animals = animals;
+//        this.directions = directions;
+//    }
+
+
+    // do zmiany
     @Override
     public void run(){
-        int amountOfAnimals = animals.size();
-        for(int index = 0; index < directions.size(); index++){
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                System.out.println("Nawet pospać nie dadzą....");
-                return;
-            }
-            Animal animal = animals.get(index % amountOfAnimals); // % <-> modulo
-            map.move(animal, directions.get(index));
-        }
+//        int amountOfAnimals = animals.size();
+//        for(int index = 0; index < directions.size(); index++){
+//            try {
+//                Thread.sleep(500);
+//            } catch (InterruptedException e) {
+//                System.out.println("Nawet pospać nie dadzą....");
+//                return;
+//            }
+//            Animal animal = animals.get(index % amountOfAnimals); // % <-> modulo
+//            map.move(animal, directions.get(index));
+//        }
     }
 
     List<Animal> getAnimals() {

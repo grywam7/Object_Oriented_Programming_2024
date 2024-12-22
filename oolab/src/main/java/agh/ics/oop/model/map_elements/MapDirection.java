@@ -1,7 +1,14 @@
 package agh.ics.oop.model.map_elements;
 
 public enum MapDirection {
-    NORTH, EAST, SOUTH, WEST;
+    NORTH,
+    NORTHEAST,
+    EAST,
+    SOUTHEAST,
+    SOUTH,
+    SOUTHWEST,
+    WEST,
+    NORTHWEST,;
 
     @Override
     public String toString() {

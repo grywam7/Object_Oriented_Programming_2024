@@ -17,69 +17,31 @@ public class GrassField extends AbstractWorldMap {
         placeGrass(grassFields);
     }
 
-    // for test use only
+    // dodac metode add grasses(liczba traw do postawienia?)?
+
+
     Map<Vector2d, Grass> getGrasses() {
         return Collections.unmodifiableMap(grasses);
     }
 
-    @Override
-    public WorldElement objectAt(Vector2d position) {
-        WorldElement animal = super.objectAt(position);
-        return animal != null ? animal : grasses.get(position);
-    }
 
-    @Override
-    public boolean isOccupied(Vector2d position) {
-        return super.isOccupied(position) || grasses.containsKey(position);
-    }
+    // potrzebna metoda do wyznaczenia jakie pola moga miec wiecej trawy
 
-    // Method 'canMoveTo()' is identical to its super method
-    // IT IS NOT, we use super.isOccupied, not the override one
-    // because animal can be on grass. and we need isOccupied to correctly display grass positions
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-        return !super.isOccupied(position);
-    }
-
+    // musimy uwzgledniac pola co maja wieksza zszanse na trawe
     private void placeGrass(int grassCount) {
-        int maxSize = (int) Math.sqrt(grassCount * 10);
-        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(maxSize, maxSize, grassCount);
-
-        for (Vector2d grassPosition : randomPositionGenerator) {
-            if (!grasses.containsKey(grassPosition)) {
-                grasses.put(grassPosition, new Grass(grassPosition));
-            }
-        }
-    }
-
-    @Override
-    public Collection<WorldElement> getElements() {
-        Collection<WorldElement> combinedElements = new ArrayList<>(super.getElements());
-        combinedElements.addAll(grasses.values());
-        return Collections.unmodifiableCollection(combinedElements);
-    }
-
-    @Override
-    public Boundary getCurrentBounds() {
-        final Vector2d[] corners = new Vector2d[]{null, null};
-        if (grasses.isEmpty() && animals.isEmpty()) {
-            corners[0] = vector0;
-            corners[1] = vector0;
-        } else {
-            updateCorners(corners, grasses.keySet());
-            updateCorners(corners, animals.keySet());
-        }
-        return new Boundary(corners[0], corners[1]);
-    }
-
-    private void updateCorners(Vector2d[] corners, Set<Vector2d> vectors) {
-        for (Vector2d vector : vectors) {
-            corners[0] = corners[0] == null ? vector : corners[0].lowerLeft(vector);
-            corners[1] = corners[1] == null ? vector : corners[1].upperRight(vector);
-        }
+//        int maxSize = (int) Math.sqrt(grassCount * 10);
+//        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(maxSize, maxSize, grassCount);
+//
+//        for (Vector2d grassPosition : randomPositionGenerator) {
+//            if (!grasses.containsKey(grassPosition)) {
+//                grasses.put(grassPosition, new Grass(grassPosition));
+//            }
+//        }
     }
 }
 
+
+// dla tych co ma byc ich 80% pozycja 4 razy, a te co 20% tylko raz
 class RandomPositionGenerator implements Iterable<Vector2d> {
 
     private final int maxWidth;

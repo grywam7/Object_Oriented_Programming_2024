@@ -2,7 +2,6 @@ package agh.ics.oop.model.maps;
 
 import java.util.*;
 
-import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import agh.ics.oop.model.map_elements.*;
 import agh.ics.oop.model.util.MapVisualizer;
 
@@ -10,76 +9,63 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected final Map<Vector2d, Animal> animals = new HashMap<>();
     protected final MapVisualizer visualizer = new MapVisualizer(this);
     private final List<MapChangeListener> observers = new ArrayList<>();
+    private final Boundary mapEdges;
+    private final Boundary jungleEdges;
+    private final Boundary equatorEdges;
 
-    public void addObserver(MapChangeListener observer) {
-        observers.add(observer);
-    }
-    public void removeObserver(MapChangeListener observer) {
-        observers.remove(observer);
-    }
-    protected void mapChanged(String message) {
-        for (MapChangeListener observer : observers) {
-            observer.mapChanged(this, message);
-        }
-    }
+// dodac jakies sensowne dane do tych powyzej
+
 
     Map<Vector2d, Animal> getAnimals() {
         return Collections.unmodifiableMap(animals);
     }
 
     @Override
-    public void place(Animal animal) throws IncorrectPositionException {
-        Vector2d newAnimalPosition = animal.getPosition();
-        if (canMoveTo(newAnimalPosition)) {
-            animals.put(newAnimalPosition, animal);
-            mapChanged("Animal placed at position: " + newAnimalPosition);
-        } else {
-            throw new IncorrectPositionException(newAnimalPosition);
-        }
+    public void place(Animal animal) {
+//do zmiany
+        //        Vector2d newAnimalPosition = animal.getPosition();
+//        if (canMoveTo(newAnimalPosition)) {
+//            animals.put(newAnimalPosition, animal);
+//            mapChanged("Animal placed at position: " + newAnimalPosition);
+//        } else {
+//            throw new IncorrectPositionException(newAnimalPosition);
+//        }
     }
 
-    @Override
     public void move(Animal animal, MoveDirection direction) {
-        Vector2d oldPosition = animal.getPosition();
-        animal.move(direction, this);
-        Vector2d newPosition = animal.getPosition();
-        if (!oldPosition.equals(newPosition)) {
-            animals.remove(oldPosition);
-            animals.put(newPosition, animal);
-            mapChanged("Animal moved from " + oldPosition + " to " + newPosition);
+// inaczej walidacja, zwirze na rogach ma sie odwracac
+
+//                Vector2d oldPosition = animal.getPosition();
+//        animal.move(direction, this);
+//        Vector2d newPosition = animal.getPosition();
+//        if (!oldPosition.equals(newPosition)) {
+//            animals.remove(oldPosition);
+//            animals.put(newPosition, animal);
+//            mapChanged("Animal moved from " + oldPosition + " to " + newPosition);
         }
     }
+// metoda do wypisania pol ze zwerzetami
+
+// sprawdzamy czy na polu jest trawa, jesli jest to ustalamy kto ja zje
+// potem sprawdzamy czy mozna sie rozmanaza, i ustalamy kto z kim
+// jesli nie bylo konfliktu w jedzeniu to jest 1 zwierzak czyli nie rozmnozy sie
+
+// czy jest trawa?
+
+// czy sa zwierzeta z energia do rozmanazania
 
     @Override
-    public boolean isOccupied(Vector2d position) {
-        return animals.containsKey(position);
+    public WorldElement grassesAt(Vector2d position) {
+        return grasses.get(position);
     }
 
     @Override
-    public WorldElement objectAt(Vector2d position) {
-        return animals.get(position);
-    }
+    public abstract Boundary getMapBounds();
 
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-        return !isOccupied(position);
-    }
-
-    public String toString() {
-        Boundary bounds = getCurrentBounds();
-        return visualizer.draw(bounds.bottomLeft(), bounds.topRight());
-    }
-
-    @Override
-    public Collection<WorldElement> getElements(){
-        return Collections.unmodifiableCollection(animals.values());
-    }
-
-    @Override
-    public abstract Boundary getCurrentBounds();
+// dodać getery do pozostalych boundry
 
     @Override
     public String getID(){
-        return  super.toString();
+        return super.toString();
     }
 }

@@ -16,4 +16,6 @@ public class Grass implements WorldElement {
     public String toString() {
         return "*";
     }
+
+    // indeks?
 }
