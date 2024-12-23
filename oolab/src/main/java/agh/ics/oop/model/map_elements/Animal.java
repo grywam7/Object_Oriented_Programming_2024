@@ -119,8 +119,31 @@ public class Animal implements WorldElement {
             default -> throw new IllegalArgumentException("Invalid rotation number: " + number);
         }
     }
-    
-    private void move(int number) {
-        this.position = position.add(this.direction.toUnitVector());
+
+    //move przyjmuje liczbe bo tam było ze sie zawsze najpierw obraca a potem idzie do przodu
+    public void move(int number, Boundary boundary) {
+        // Rotate first
+        rotate(number);
+
+        // Calculate potential new position q
+        Vector2d potentialPosition = position.add(direction.toUnitVector());
+
+        // Check if moving out of bounds
+        if (potentialPosition.getX() < boundary.bottomLeft().getX()) {
+            // Wrap around horizontally (left to right)
+            potentialPosition = new Vector2d(boundary.topRight().getX(), potentialPosition.getY());
+        } else if (potentialPosition.getX() > boundary.topRight().getX()) {
+            // Wrap around horizontally (right to left)
+            potentialPosition = new Vector2d(boundary.bottomLeft().getX(), potentialPosition.getY());
+        }
+
+        if (potentialPosition.getY() < boundary.bottomLeft().getY() || potentialPosition.getY() > boundary.topRight().getY()) {
+            // Hit the poles (top or bottom)
+            direction = direction.opposite(); // Reverse direction
+        } else {
+            // Move to the new position if valid
+            position = potentialPosition;
+        }
     }
+
 }
