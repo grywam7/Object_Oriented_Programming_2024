@@ -93,6 +93,18 @@ public class Animal implements WorldElement {
         return position;
     }
 
+    public int getEnergy() {
+        return energy;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public int getChildrenCount() {
+        return childrenCount;
+    }
+
     public MapDirection getDirection(){
         return direction;
     }
