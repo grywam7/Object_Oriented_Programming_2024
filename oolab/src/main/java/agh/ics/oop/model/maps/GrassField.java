@@ -12,6 +12,12 @@ import static java.lang.Math.random;
 public class GrassField extends AbstractWorldMap {
     private final Map<Vector2d, Grass> grasses = new HashMap<>();
     private final Vector2d vector0 = new Vector2d(0, 0);
+    private final Map<Vector2d, Boolean> grassMap = new HashMap<>();
+
+    private void fillGrassMap() {
+        for(MapWidth)
+    }
+
 
     public GrassField(int grassFields) {
         placeGrass(grassFields);
@@ -38,22 +44,39 @@ public class GrassField extends AbstractWorldMap {
 //            }
 //        }
     }
+
+
+    public void addGrass(Integer amount){
+
+
+
+    }
+
+    public List<Vector2d> tilesWithoutGrass(){
+        return
+    }
+
+
+
+
 }
 
 
 // dla tych co ma byc ich 80% pozycja 4 razy, a te co 20% tylko raz
 class RandomPositionGenerator implements Iterable<Vector2d> {
-
+    private final GrassField
     private final int maxWidth;
     private final int maxHeight;
     private final int grassCount;
-    private final TreeList<Integer> availablePositions = new TreeList<>();
+    private final TreeList<Integer> availablePositions;
 
-    public RandomPositionGenerator(int maxWidth, int maxHeight, int grassCount) {
+    public RandomPositionGenerator(int maxWidth, int maxHeight, int grassCount, TreeList<Integer> availablePositions) {
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         this.grassCount = grassCount;
-        
+        this.availablePositions = availablePositions;
+
+
         for (int i = 0; i < maxHeight * maxWidth; i++) {
             availablePositions.add(i);
         }

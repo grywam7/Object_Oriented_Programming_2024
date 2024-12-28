@@ -19,7 +19,7 @@ public interface WorldMap {
      * @param animal The animal to place on the map.
      * @return nothing if the animal was placed. The animal cannot be placed if the move is not valid.
      */
-    void place(Animal animal);
+    void placeAnimal(Animal animal);
 
     /**
      * Moves an animal (if it is present on the map) according to specified direction.
