@@ -1,6 +1,5 @@
 package agh.ics.oop;
 
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -26,9 +25,8 @@ public class SimulationLauncher extends Application {
         settingsPane.setHgap(10);
 
         // Input fields for simulation parameters
-        TextField widthField = createLabeledField(settingsPane, "Width:", 0);
-        TextField heightField = createLabeledField(settingsPane, "Height:", 1);
-        TextField jungleWidthField = createLabeledField(settingsPane, "Jungle Width:", 2);
+        TextField widthField = createLabeledField(settingsPane, "Width:", 1);
+        TextField heightField = createLabeledField(settingsPane, "Height:", 2);
         TextField jungleHeightField = createLabeledField(settingsPane, "Jungle Height:", 3);
         TextField initialPlantsField = createLabeledField(settingsPane, "Initial Plants:", 4);
         TextField plantEnergyField = createLabeledField(settingsPane, "Plant Energy:", 5);
@@ -48,14 +46,13 @@ public class SimulationLauncher extends Application {
         settingsPane.add(mapModificationCheckbox, 0, 15, 2, 1);
         settingsPane.add(animalModificationCheckbox, 0, 16, 2, 1);
 
-        // Start button
+        // Button for starting simulation with user-defined parameters
         Button startButton = new Button("Start Simulation");
         startButton.setOnAction(event -> {
             try {
                 // Parse input and start simulation
                 int width = Integer.parseInt(widthField.getText());
                 int height = Integer.parseInt(heightField.getText());
-                int jungleWidth = Integer.parseInt(jungleWidthField.getText());
                 int jungleHeight = Integer.parseInt(jungleHeightField.getText());
                 int initialPlants = Integer.parseInt(initialPlantsField.getText());
                 int plantEnergy = Integer.parseInt(plantEnergyField.getText());
@@ -72,7 +69,7 @@ public class SimulationLauncher extends Application {
                 boolean mapModification = mapModificationCheckbox.isSelected();
                 boolean animalModification = animalModificationCheckbox.isSelected();
 
-                Simulation simulation = new Simulation(width, height, jungleWidth, jungleHeight, mapModification, animalModification,
+                Simulation simulation = new Simulation(width, height, jungleHeight, mapModification, animalModification,
                         initialPlants, plantEnergy, dailyPlants, initialAnimals, animalEnergy,
                         sufficientEnergy, breedingEnergyLoss, dailyEnergyLoss, mutationCount, genomeLength, targetDay);
 
@@ -81,47 +78,38 @@ public class SimulationLauncher extends Application {
                 showError("Invalid input! Please enter valid numbers.");
             }
         });
+        settingsPane.add(startButton, 0, 18);
 
-
+        // Button for running simulation with default parameters
         Button defaultButton = new Button("Run Default Parameters");
-        startButton.setOnAction(event -> {
-            try {
-                int width = 60;
-                int height = 60;
-                int jungleWidth = 20;
-                int jungleHeight = 20;
-                int initialPlants = 20;
-                int plantEnergy = 25;
-                int dailyPlants = 10;
-                int initialAnimals = 4;
-                int animalEnergy = 100;
-                int sufficientEnergy = Integer.parseInt(sufficientEnergyField.getText());
-                int breedingEnergyLoss = Integer.parseInt(breedingEnergyLossField.getText());
-                int mutationCount = Integer.parseInt(mutationCountField.getText());
-                int genomeLength = Integer.parseInt(genomeLengthField.getText());
-                int targetDay = Integer.parseInt(targetDayField.getText());
-                int dailyEnergyLoss = Integer.parseInt(dailyEnergyLossField.getText());
+        defaultButton.setOnAction(event -> {
+            int width = 60;
+            int height = 60;
+            int jungleHeight = 20;
+            int initialPlants = 20;
+            int plantEnergy = 25;
+            int dailyPlants = 10;
+            int initialAnimals = 4;
+            int animalEnergy = 100;
+            int sufficientEnergy = 50;
+            int breedingEnergyLoss = 20;
+            int mutationCount = 2;
+            int genomeLength = 8;
+            int targetDay = 100;
+            int dailyEnergyLoss = 5;
 
-                boolean mapModification = mapModificationCheckbox.isSelected();
-                boolean animalModification = animalModificationCheckbox.isSelected();
+            boolean mapModification = mapModificationCheckbox.isSelected();
+            boolean animalModification = animalModificationCheckbox.isSelected();
 
-                Simulation simulation = new Simulation(width, height, jungleWidth, jungleHeight, mapModification, animalModification,
-                        initialPlants, plantEnergy, dailyPlants, initialAnimals, animalEnergy,
-                        sufficientEnergy, breedingEnergyLoss, dailyEnergyLoss, mutationCount, genomeLength, targetDay);
+            Simulation simulation = new Simulation(width, height, jungleHeight, mapModification, animalModification,
+                    initialPlants, plantEnergy, dailyPlants, initialAnimals, animalEnergy,
+                    sufficientEnergy, breedingEnergyLoss, dailyEnergyLoss, mutationCount, genomeLength, targetDay);
 
-                showSimulationWindow(simulation);
-            } catch (NumberFormatException e) {
-                showError("Invalid input! Please enter valid numbers.");
-            }
+            showSimulationWindow(simulation);
         });
+        settingsPane.add(defaultButton, 1, 18);
 
-
-
-
-
-        settingsPane.add(defaultButton, 3, 18, 2, 1);
-
-        Scene settingsScene = new Scene(settingsPane, 400, 650);
+        Scene settingsScene = new Scene(settingsPane, 500, 700);
         primaryStage.setTitle("Simulation Settings");
         primaryStage.setScene(settingsScene);
         primaryStage.show();

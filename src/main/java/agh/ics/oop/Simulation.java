@@ -18,7 +18,7 @@ public class Simulation {
     private final boolean animalModification;
     private final int dailyEnergyLoss;
 
-    public Simulation(int width, int height, int jungleWidth, int jungleHeight, boolean mapModification, boolean animalModification,
+    public Simulation(int width, int height, int jungleHeight, boolean mapModification, boolean animalModification,
                       int initialPlantCount, int plantEnergy, int dailyPlantCount, int initialAnimalCount, int initialAnimalEnergy,
                       int sufficientEnergy, int breedingEnergyLoss, int dailyEnergyLoss, int mutationCount, int genomeLength, int targetDay) {
 
@@ -32,12 +32,21 @@ public class Simulation {
         this.animalModification = animalModification;
         this.dailyEnergyLoss = dailyEnergyLoss;
 
+        // Walidacja wysokości dżungli
+        if (jungleHeight > height) {
+            throw new IllegalArgumentException("Jungle height cannot be greater than the map height!");
+        }
+
         // Wybór mapy
         if (mapModification) {
             this.worldMap = new CrawlingJungleMap(new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1)));
         } else {
-            this.worldMap = new EquatorMap(new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1)),
-                    new Boundary(new Vector2d(0, (height-jungleHeight)%2), new Vector2d(width - 1, (height-jungleHeight)%2 - jungleHeight - 1)));
+            int yMin = (height - jungleHeight) / 2;
+            int yMax = yMin + jungleHeight - 1;
+            this.worldMap = new EquatorMap(
+                    new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1)), // Pełna mapa
+                    new Boundary(new Vector2d(0, yMin), new Vector2d(width - 1, yMax))    // Równik
+            );
         }
 
         // Inicjalizacja zwierząt i roślin
