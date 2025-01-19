@@ -37,7 +37,7 @@ public class Simulation {
             this.worldMap = new CrawlingJungleMap(new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1)));
         } else {
             this.worldMap = new EquatorMap(new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1)),
-                    new Boundary(new Vector2d(0, 0), new Vector2d(jungleWidth - 1, jungleHeight - 1)));
+                    new Boundary(new Vector2d(0, (height-jungleHeight)%2), new Vector2d(width - 1, (height-jungleHeight)%2 - jungleHeight - 1)));
         }
 
         // Inicjalizacja zwierząt i roślin

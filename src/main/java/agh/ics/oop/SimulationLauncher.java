@@ -82,7 +82,44 @@ public class SimulationLauncher extends Application {
             }
         });
 
-        settingsPane.add(startButton, 0, 18, 2, 1);
+
+        Button defaultButton = new Button("Run Default Parameters");
+        startButton.setOnAction(event -> {
+            try {
+                int width = 60;
+                int height = 60;
+                int jungleWidth = 20;
+                int jungleHeight = 20;
+                int initialPlants = 20;
+                int plantEnergy = 25;
+                int dailyPlants = 10;
+                int initialAnimals = 4;
+                int animalEnergy = 100;
+                int sufficientEnergy = Integer.parseInt(sufficientEnergyField.getText());
+                int breedingEnergyLoss = Integer.parseInt(breedingEnergyLossField.getText());
+                int mutationCount = Integer.parseInt(mutationCountField.getText());
+                int genomeLength = Integer.parseInt(genomeLengthField.getText());
+                int targetDay = Integer.parseInt(targetDayField.getText());
+                int dailyEnergyLoss = Integer.parseInt(dailyEnergyLossField.getText());
+
+                boolean mapModification = mapModificationCheckbox.isSelected();
+                boolean animalModification = animalModificationCheckbox.isSelected();
+
+                Simulation simulation = new Simulation(width, height, jungleWidth, jungleHeight, mapModification, animalModification,
+                        initialPlants, plantEnergy, dailyPlants, initialAnimals, animalEnergy,
+                        sufficientEnergy, breedingEnergyLoss, dailyEnergyLoss, mutationCount, genomeLength, targetDay);
+
+                showSimulationWindow(simulation);
+            } catch (NumberFormatException e) {
+                showError("Invalid input! Please enter valid numbers.");
+            }
+        });
+
+
+
+
+
+        settingsPane.add(defaultButton, 3, 18, 2, 1);
 
         Scene settingsScene = new Scene(settingsPane, 400, 650);
         primaryStage.setTitle("Simulation Settings");
