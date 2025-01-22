@@ -9,7 +9,7 @@ import agh.ics.oop.model.maps.EquatorMap;
 public class Simulation {
     private final AbstractWorldMap worldMap;
     private int currentDay;
-    private final int targetDay; // Do którego dnia symulacja ma działać
+    private final int targetDay;
     private final int dailyPlantCount;
     private final int sufficientEnergy;
     private final int breedingEnergyLoss;
@@ -93,4 +93,10 @@ public class Simulation {
     public AbstractWorldMap getWorldMap() {
         return this.worldMap;
     }
+
+    public int getCurrentDay() {
+        return currentDay;
+    }
+
+
 }

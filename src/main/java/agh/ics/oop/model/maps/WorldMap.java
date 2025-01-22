@@ -2,7 +2,6 @@ package agh.ics.oop.model.maps;
 
 import agh.ics.oop.model.map_elements.*;
 
-import java.util.Collection;
 
 /**
  * The interface responsible for interacting with the map of the world.
@@ -24,9 +23,7 @@ public interface WorldMap {
      * Moves an animal (if it is present on the map) according to specified direction.
      * If the move is not possible, this method has no effect.
      */
-// albo po liczbie zamiast map direction
-    void move(Animal animal, MapDirection direction);
-
+// albo po liczbie zamiast map directionvvv
 
 
 

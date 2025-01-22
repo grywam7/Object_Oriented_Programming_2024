@@ -43,7 +43,6 @@ public class EquatorMap extends AbstractWorldMap {
     }
 
     private void placeGrass(Vector2d position) {
-        // Umieść trawę na podanej pozycji
         grasses.put(position, new Grass(position));
     }
 }

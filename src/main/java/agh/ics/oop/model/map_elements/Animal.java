@@ -21,8 +21,7 @@ public class Animal implements WorldElement {
     private Animal parent1;
     private Animal parent2;
 
-    private int genomeLength;
-    private int mutationCount;
+    private final int genomeLength;
     private int currentGenomeIndex;
     List<Integer> genome = new ArrayList<>();
 
@@ -85,6 +84,9 @@ public class Animal implements WorldElement {
         }
     }
 
+    public List<Integer> getGenome() {
+        return genome;
+    }
 
     public void incrementGenomeIndex() {
         currentGenomeIndex = (currentGenomeIndex + 1) % genome.size();
@@ -103,9 +105,32 @@ public class Animal implements WorldElement {
         energy -= loss;
     }
 
-    //POROZBIJAĆ NA MNIEJSZE
+    private List<Integer> calculateNewGenome(Animal animal1, Animal animal2, int mutationCount) {
+        List<Integer> childGenome = new ArrayList<>();
+        int totalEnergy = animal1.energy + animal2.energy;
+        double thisParentRatio = (double) animal1.energy / totalEnergy;
+        int splitPoint = (int) (genomeLength * thisParentRatio);
+
+        boolean takeLeftFromStronger = random.nextBoolean();
+        if (takeLeftFromStronger) {
+            childGenome.addAll(animal1.genome.subList(0, splitPoint));
+            childGenome.addAll(animal2.genome.subList(splitPoint, genomeLength));
+        } else {
+            childGenome.addAll(animal2.genome.subList(0, splitPoint));
+            childGenome.addAll(animal1.genome.subList(splitPoint, genomeLength));
+        }
+
+        // Mutacje genomu potomka
+        for (int i = 0; i < mutationCount; i++) {
+            int mutationIndex = random.nextInt(genomeLength);
+            childGenome.set(mutationIndex, random.nextInt(8));
+        }
+        return childGenome;
+    }
+
+
     public Animal copulate(Animal secondAnimal, int energyLoss, int simulationDay, int mutationCount) {
-        // Sprawdzenie, czy oba zwierzęta mają wystarczającą energię do rozmnażania będzie w simulation
+        // Sprawdzenie, czy oba zwierzęta mają wystarczającą energię do rozmnażania jest w simulation
 
         // Obliczanie energii potomka i odejmowanie jej od rodziców
         int childEnergy = energyLoss * 2;
@@ -116,34 +141,13 @@ public class Animal implements WorldElement {
         Animal child = new Animal(this.position, childEnergy, genomeLength,  simulationDay);
         child.setParents(this, secondAnimal);
 
-        // Aktualizacja liczby dzieci u rodziców DAĆ TO OSOBNO
+        // Aktualizacja liczby dzieci
         this.childrenCount++;
         secondAnimal.childrenCount++;
         updateDescendantCount(this);
         updateDescendantCount(secondAnimal);
 
-        // Krzyżowanie genomu
-        List<Integer> childGenome = new ArrayList<>();
-        int totalEnergy = this.energy + secondAnimal.energy;
-        double thisParentRatio = (double) this.energy / totalEnergy;
-        int splitPoint = (int) (genomeLength * thisParentRatio);
-
-        boolean takeLeftFromStronger = random.nextBoolean();
-        if (takeLeftFromStronger) {
-            childGenome.addAll(this.genome.subList(0, splitPoint));
-            childGenome.addAll(secondAnimal.genome.subList(splitPoint, genomeLength));
-        } else {
-            childGenome.addAll(secondAnimal.genome.subList(0, splitPoint));
-            childGenome.addAll(this.genome.subList(splitPoint, genomeLength));
-        }
-
-        // Mutacje genomu potomka
-        for (int i = 0; i < mutationCount; i++) {
-            int mutationIndex = random.nextInt(genomeLength);
-            childGenome.set(mutationIndex, random.nextInt(8)); // Gen zmienia się na losową wartość
-        }
-
-        child.genome = childGenome;
+        child.genome = calculateNewGenome(this, secondAnimal, mutationCount);
         return child;
     }
 

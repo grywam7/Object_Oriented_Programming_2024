@@ -5,7 +5,6 @@ import agh.ics.oop.model.map_elements.*;
 import agh.ics.oop.Conflicts;
 
 public abstract class AbstractWorldMap implements WorldMap{
-    private final List<MapChangeListener> observers = new ArrayList<>();
     protected final Map<Vector2d, HashSet<Animal>> animals = new HashMap<>();
     protected final Map<Vector2d, Grass> grasses = new HashMap<>();
     private final Boundary mapEdges;
@@ -27,23 +26,6 @@ public abstract class AbstractWorldMap implements WorldMap{
             placeAnimal(new Animal(new Vector2d(randomX, randomY), animalsEnergy, genomeLength, 0)) ;
         }
     }
-
-    public void initializeGrasses(Integer numberOfGrasses) {
-        this.growGrass(numberOfGrasses);
-    }
-
-    public void growGrass(Integer numberOfGrasses) {
-        for(int i = 0; i < numberOfGrasses; i++) {
-
-
-        }
-    }
-    // trzymamy mape z pozycjami trawy -> jes trzeba wyrzucić
-    // a) równik
-    // dla wszystkie elementy równika dodajemy razy 4
-    // b) pełzajaca dzungla
-    // wszyscy sasiedzi traw dodajemy jako 4.
-//    drzewo optymalne
 
 
     public void placeAnimal(Animal animal) {
@@ -118,15 +100,6 @@ public abstract class AbstractWorldMap implements WorldMap{
     public Set<Vector2d> grassPlaces(){
         return grasses.keySet();
     }
-
-// sprawdzamy czy na polu jest trawa, jesli jest to ustalamy kto ja zje
-// potem sprawdzamy czy mozna sie rozmanaza, i ustalamy kto z kim
-// jesli nie bylo konfliktu w jedzeniu to jest 1 zwierzak czyli nie rozmnozy sie
-
-// czy jest trawa?
-
-// czy sa zwierzeta z energia do rozmanazania
-
 
     public WorldElement grassesAt(Vector2d position) {
         return grasses.get(position);
@@ -225,39 +198,5 @@ public abstract class AbstractWorldMap implements WorldMap{
             }
         }
     }
-
-    public void getAllAnimalsStats() {
-        System.out.println("All Animals Stats:");
-        for (Map.Entry<Vector2d, HashSet<Animal>> entry : animals.entrySet()) {
-            for (Animal animal : entry.getValue()) {
-                System.out.println(animal.getStats());
-                System.out.println("-----------");
-            }
-        }
-    }
-
-    public void printMap() {
-        for (int y = getMapEdges().topRight().getY(); y >= getMapEdges().bottomLeft().getY(); y--) {
-            for (int x = getMapEdges().bottomLeft().getX(); x <= getMapEdges().topRight().getX(); x++) {
-                Vector2d position = new Vector2d(x, y);
-
-                // Sprawdzanie czy są zwierzęta na pozycji
-                if (animals.containsKey(position) && !animals.get(position).isEmpty()) {
-                    System.out.print("A "); // A for Animal
-                }
-                // Jeśli nie ma zwierząt, sprawdzamy trawę
-                else if (grasses.containsKey(position)) {
-                    System.out.print("G "); // G for Grass
-                }
-                // Jeśli nie ma nic
-                else {
-                    System.out.print(". "); // . for Empty
-                }
-            }
-            System.out.println(); // Nowa linia po każdej kolumnie
-        }
-    }
-
-
 
 }

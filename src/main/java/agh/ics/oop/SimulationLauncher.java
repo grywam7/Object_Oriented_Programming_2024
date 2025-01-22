@@ -80,7 +80,7 @@ public class SimulationLauncher extends Application {
         });
         settingsPane.add(startButton, 0, 18);
 
-        // Button for running simulation with default parameters
+
         Button defaultButton = new Button("Run Default Parameters");
         defaultButton.setOnAction(event -> {
             int width = 60;
@@ -117,13 +117,24 @@ public class SimulationLauncher extends Application {
 
     private void showSimulationWindow(Simulation simulation) {
         SimulationView simulationView = new SimulationView(simulation);
-        Scene simulationScene = new Scene(simulationView, 800, 600);
-        primaryStage.setTitle("Simulation");
-        primaryStage.setScene(simulationScene);
+        Scene simulationScene = new Scene(simulationView, 800, 650);
 
-        // Start simulation in a new thread
+        Stage simulationStage = new Stage();
+        simulationStage.setTitle("Simulation");
+        simulationStage.setScene(simulationScene);
+
+        // Zatrzymanie symulacji przy zamknięciu okna
+        simulationStage.setOnCloseRequest(event -> {
+            simulationView.stopSimulation();
+        });
+
         new Thread(simulationView::runSimulation).start();
+
+        simulationStage.show();
     }
+
+
+
 
     private TextField createLabeledField(GridPane pane, String labelText, int row) {
         Label label = new Label(labelText);
