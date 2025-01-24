@@ -50,7 +50,7 @@ public class Simulation {
         }
 
         // Inicjalizacja zwierząt i roślin
-        this.worldMap.initializeAnimals(initialAnimalCount, initialAnimalEnergy, genomeLength);
+        this.worldMap.initializeAnimals(initialAnimalCount, initialAnimalEnergy, genomeLength, animalModification);
         this.worldMap.growGrass(initialPlantCount);
     }
 
@@ -69,11 +69,7 @@ public class Simulation {
         worldMap.removeDeadAnimals();
 
         // 2. Ruch zwierząt
-        if (animalModification) {
-            worldMap.performMovesSpecial();
-        } else {
-            worldMap.performMoves();
-        }
+        worldMap.performMoves();
 
         // 3. Zwierzęta jedzą rośliny
         worldMap.feedAnimals(plantEnergy);

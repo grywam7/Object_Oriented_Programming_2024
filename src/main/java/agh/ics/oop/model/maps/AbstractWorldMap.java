@@ -18,12 +18,17 @@ public abstract class AbstractWorldMap implements WorldMap{
     public Map<Vector2d, Grass> getGrasses() { return Collections.unmodifiableMap(grasses); }
     public Boundary getMapEdges() { return mapEdges; }
 
-    public void initializeAnimals(Integer amountOfAnimals, Integer animalsEnergy, int genomeLength) {
+    public void initializeAnimals(int amountOfAnimals, int animalsEnergy, int genomeLength, boolean animalModification) {
         Random random = new Random();
         for(int i = 0; i < amountOfAnimals; i++) {
             int randomX = random.nextInt(mapEdges.getWidth()) + mapEdges.bottomLeft().getX();
             int randomY = random.nextInt(mapEdges.getHeight()) + mapEdges.bottomLeft().getY();
-            placeAnimal(new Animal(new Vector2d(randomX, randomY), animalsEnergy, genomeLength, 0)) ;
+            Animal animal= new Animal(new Vector2d(randomX, randomY), animalsEnergy, 0);
+            if(animalModification) {
+                animal.setGenome(new Genome(genomeLength));
+            } else animal.setGenome(new Genome(genomeLength));
+            placeAnimal(animal);
+            System.out.println(animal.getGenome());
         }
     }
 
@@ -37,15 +42,6 @@ public abstract class AbstractWorldMap implements WorldMap{
         animals.get(newAnimalPosition).add(animal);
     }
 
-    public void move(Animal animal, MapDirection direction) {
-        Vector2d oldPosition = animal.getPosition();
-        animal.move(direction.toInteger(), mapEdges);
-        Vector2d newPosition = animal.getPosition();
-        if (!oldPosition.equals(newPosition)) {
-            this.placeAnimal(animal);
-        }
-    }
-
     public void performMoves() {
         Map<Vector2d, HashSet<Animal>> updatedAnimals = new HashMap<>();
 
@@ -55,8 +51,6 @@ public abstract class AbstractWorldMap implements WorldMap{
                 int moveGene = animal.getCurrentGenomeMove();
                 animal.move(moveGene, mapEdges);
 
-                animal.incrementGenomeIndex();
-
                 // Dodaj zwierzę do nowej pozycji
                 Vector2d newPosition = animal.getPosition();
                 updatedAnimals.computeIfAbsent(newPosition, k -> new HashSet<>()).add(animal);
@@ -67,31 +61,6 @@ public abstract class AbstractWorldMap implements WorldMap{
         animals.clear();
         animals.putAll(updatedAnimals);
     }
-
-    public void performMovesSpecial() {
-        Map<Vector2d, HashSet<Animal>> updatedAnimals = new HashMap<>();
-
-        for (Map.Entry<Vector2d, HashSet<Animal>> entry : animals.entrySet()) {
-            for (Animal animal : entry.getValue()) {
-                // Pobierz aktualny gen z genomu i wykonaj ruch
-                int moveGene = animal.getGenomeIndexSpecial();
-                animal.move(moveGene, mapEdges);
-
-                animal.incrementGenomeIndex();
-
-                // Dodaj zwierzę do nowej pozycji
-                Vector2d newPosition = animal.getPosition();
-                updatedAnimals.computeIfAbsent(newPosition, k -> new HashSet<>()).add(animal);
-            }
-        }
-
-        // Zaktualizuj mapę zwierząt
-        animals.clear();
-        animals.putAll(updatedAnimals);
-    }
-
-
-
 
     public Set<Vector2d> animalsPlaces() {
         return animals.keySet();
@@ -198,5 +167,7 @@ public abstract class AbstractWorldMap implements WorldMap{
             }
         }
     }
-
+    public void placeGrass(Vector2d position) {
+        grasses.put(position, new Grass(position));
+    }
 }

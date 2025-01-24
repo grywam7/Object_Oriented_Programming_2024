@@ -21,13 +21,11 @@ public class Animal implements WorldElement {
     private Animal parent1;
     private Animal parent2;
 
-    private final int genomeLength;
-    private int currentGenomeIndex;
-    List<Integer> genome = new ArrayList<>();
+    private Genome genome;
 
     public static final Random random = new Random();
 
-    public Animal(Vector2d position, int startingEnergy, int genomeLength, int currentDay) {
+    public Animal(Vector2d position, int startingEnergy,int currentDay) {
         this.direction = MapDirection.NORTH;
         this.position = position;
         this.energy = startingEnergy;
@@ -37,11 +35,6 @@ public class Animal implements WorldElement {
         this.birthDay = currentDay;
         parent1 = null;
         parent2 = null;
-        this.genomeLength = genomeLength; // Przypisz długość genomu
-        this.currentGenomeIndex = 0;
-        for (int i = 0; i < genomeLength; i++) {
-            genome.add(random.nextInt(8)); // Wartości od 0 do 7
-        }
     }
 
     public int getPlantsEatenCount() {
@@ -70,29 +63,15 @@ public class Animal implements WorldElement {
     }
 
     public int getCurrentGenomeMove() {
-        return genome.get(currentGenomeIndex);
+        return genome.nextMove();
     }
 
-    public int getGenomeIndexSpecial() {
-        if (random.nextInt(100) < 80) {
-            // 80% szansy na przejście do kolejnego genu w kolejności
-        } else {
-            // 20% szansy na losowy indeks
-            this.currentGenomeIndex = random.nextInt(genome.size());
-        }
-        return getCurrentGenomeMove();
-    }
-
-    public List<Integer> getGenome() {
+    public Genome getGenome() {
         return genome;
     }
 
-    public void incrementGenomeIndex() {
-        currentGenomeIndex = (currentGenomeIndex + 1) % genome.size();
-    }
-
-    public Boolean isAt(Vector2d position) {
-        return this.position.equals(position);
+    public void setGenome(Genome genome) {
+        this.genome = genome;
     }
 
     public void eat(int plantEnergyValue){
@@ -104,19 +83,25 @@ public class Animal implements WorldElement {
         energy -= loss;
     }
 
-    private List<Integer> calculateNewGenome(Animal animal1, Animal animal2, int mutationCount) {
+    private Genome calculateNewGenome(Animal animal1, Animal animal2, int mutationCount) {
+
+        List<Integer> animal1genome = animal1.getGenome().getList();
+        List<Integer> animal2genome = animal2.getGenome().getList();
+        int genomeLength = animal2genome.size();
+
         List<Integer> childGenome = new ArrayList<>();
         int totalEnergy = animal1.energy + animal2.energy;
         double thisParentRatio = (double) animal1.energy / totalEnergy;
         int splitPoint = (int) (genomeLength * thisParentRatio);
 
+
         boolean takeLeftFromStronger = random.nextBoolean();
         if (takeLeftFromStronger) {
-            childGenome.addAll(animal1.genome.subList(0, splitPoint));
-            childGenome.addAll(animal2.genome.subList(splitPoint, genomeLength));
+            childGenome.addAll(animal1genome.subList(0, splitPoint));
+            childGenome.addAll(animal2genome.subList(splitPoint, genomeLength));
         } else {
-            childGenome.addAll(animal2.genome.subList(0, splitPoint));
-            childGenome.addAll(animal1.genome.subList(splitPoint, genomeLength));
+            childGenome.addAll(animal2genome.subList(0, splitPoint));
+            childGenome.addAll(animal1genome.subList(splitPoint, genomeLength));
         }
 
         // Mutacje genomu potomka
@@ -124,7 +109,10 @@ public class Animal implements WorldElement {
             int mutationIndex = random.nextInt(genomeLength);
             childGenome.set(mutationIndex, random.nextInt(8));
         }
-        return childGenome;
+
+        Genome output = new Genome(genomeLength);
+        output.setGenome(childGenome);
+        return output;
     }
 
 
@@ -137,7 +125,7 @@ public class Animal implements WorldElement {
         secondAnimal.energy -= energyLoss;
 
         // Tworzenie nowego zwierzęcia
-        Animal child = new Animal(this.position, childEnergy, genomeLength,  simulationDay);
+        Animal child = new Animal(this.position, childEnergy,   simulationDay);
         child.setParents(this, secondAnimal);
 
         // Aktualizacja liczby dzieci
