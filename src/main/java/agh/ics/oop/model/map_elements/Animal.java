@@ -76,12 +76,11 @@ public class Animal implements WorldElement {
     public int getGenomeIndexSpecial() {
         if (random.nextInt(100) < 80) {
             // 80% szansy na przejście do kolejnego genu w kolejności
-            return getCurrentGenomeMove();
         } else {
             // 20% szansy na losowy indeks
-            currentGenomeIndex = random.nextInt(genome.size());
-            return currentGenomeIndex;
+            this.currentGenomeIndex = random.nextInt(genome.size());
         }
+        return getCurrentGenomeMove();
     }
 
     public List<Integer> getGenome() {
@@ -152,18 +151,16 @@ public class Animal implements WorldElement {
     }
 
     public void rotate(int number) {
-        switch (number) {
-            case 0 -> direction = MapDirection.NORTH;
-            case 1 -> direction = MapDirection.NORTHEAST;
-            case 2 -> direction = MapDirection.EAST;
-            case 3 -> direction = MapDirection.SOUTHEAST;
-            case 4 -> direction = MapDirection.SOUTH;
-            case 5 -> direction = MapDirection.SOUTHWEST;
-            case 6 -> direction = MapDirection.WEST;
-            case 7 -> direction = MapDirection.NORTHWEST;
-            default -> throw new IllegalArgumentException("Invalid rotation number: " + number);
+        // 0 oznacza brak obrotu
+        if (number == 0) {
+            return; // Nie zmieniaj kierunku
         }
+
+        // Obliczamy nowy kierunek na podstawie aktualnego kierunku i liczby obrotów
+        int newDirectionIndex = (direction.ordinal() + number) % 8;
+        direction = MapDirection.values()[newDirectionIndex];
     }
+
 
     //move przyjmuje liczbe bo tam było ze sie zawsze najpierw obraca a potem idzie do przodu
     public void move(int number, Boundary boundary) {
