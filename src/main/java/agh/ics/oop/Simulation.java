@@ -62,8 +62,6 @@ public class Simulation {
         if (currentDay >= targetDay) {
             return false; // Koniec symulacji
         }
-        currentDay++;
-        System.out.println("Day " + currentDay);
 
         // 1. Usunięcie martwych zwierząt
         worldMap.removeDeadAnimals();
@@ -83,7 +81,12 @@ public class Simulation {
         // 6. Utrata energii przez zwierzęta
         worldMap.applyEnergyLossToAllAnimals(dailyEnergyLoss);
 
-        return true; // Symulacja trwa dalej
+        //7. Zwiększenie wieku dla zwierząt które pozostały na mapie
+        worldMap.incrementAgeForAllAnimals();
+
+        currentDay++;
+
+        return true;
     }
 
     public AbstractWorldMap getWorldMap() {
@@ -93,6 +96,4 @@ public class Simulation {
     public int getCurrentDay() {
         return currentDay;
     }
-
-
 }

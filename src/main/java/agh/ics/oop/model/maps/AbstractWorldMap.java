@@ -9,9 +9,13 @@ public abstract class AbstractWorldMap implements WorldMap{
     protected final Map<Vector2d, Grass> grasses = new HashMap<>();
     private final Boundary mapEdges;
     private final Conflicts conflicts = new Conflicts();
+    private final int mapSize;
+    private int deadAnimalsLifespan = 0 ;
+    private int deadAnimalsCount = 0 ;
 
     protected AbstractWorldMap(Boundary mapEdges) {
         this.mapEdges = mapEdges;
+        this.mapSize = mapEdges.getHeight()*mapEdges.getWidth();
     }
 
     public Map<Vector2d, Set<Animal>> getAnimals() { return Collections.unmodifiableMap(animals); }
@@ -24,11 +28,8 @@ public abstract class AbstractWorldMap implements WorldMap{
             int randomX = random.nextInt(mapEdges.getWidth()) + mapEdges.bottomLeft().getX();
             int randomY = random.nextInt(mapEdges.getHeight()) + mapEdges.bottomLeft().getY();
             Animal animal= new Animal(new Vector2d(randomX, randomY), animalsEnergy, 0);
-            if(animalModification) {
-                animal.setGenome(new Genome(genomeLength));
-            } else animal.setGenome(new Genome(genomeLength));
+            animal.setGenome(new Genome(genomeLength));
             placeAnimal(animal);
-            System.out.println(animal.getGenome());
         }
     }
 
@@ -62,18 +63,6 @@ public abstract class AbstractWorldMap implements WorldMap{
         animals.putAll(updatedAnimals);
     }
 
-    public Set<Vector2d> animalsPlaces() {
-        return animals.keySet();
-    }
-
-    public Set<Vector2d> grassPlaces(){
-        return grasses.keySet();
-    }
-
-    public WorldElement grassesAt(Vector2d position) {
-        return grasses.get(position);
-    }
-
 
 // dodać getery do pozostalych boundry
 
@@ -97,16 +86,15 @@ public abstract class AbstractWorldMap implements WorldMap{
                 Animal animal = iterator.next();
                 if (animal.getEnergy() <= 0) {
                     deadAnimals.add(animal);
-                    iterator.remove(); // Usuń zwierzę z pozycji na mapie
+                    iterator.remove();
+                    deadAnimalsLifespan += animal.getAge();
+                    deadAnimalsCount++;
                 }
             }
         }
 
         // Usuwamy puste wpisy w mapie zwierząt
         animals.entrySet().removeIf(entry -> entry.getValue().isEmpty());
-
-        // Logowanie ilości usuniętych zwierząt
-        System.out.println("Removed " + deadAnimals.size() + " dead animals.");
     }
 
     public void breeding(int reproductionEnergy, int energyLoss, int currentDay, int mutationCount ) {
@@ -131,6 +119,13 @@ public abstract class AbstractWorldMap implements WorldMap{
         }
     }
 
+    public void incrementAgeForAllAnimals() {
+        for (Map.Entry<Vector2d, HashSet<Animal>> entry : animals.entrySet()) {
+            for (Animal animal : entry.getValue()) {
+                animal.incrementAge();
+            }
+        }
+    }
     public void feedAnimals(int plantEnergyValue) {
         List<Vector2d> grassPositionsToRemove = new ArrayList<>();
 
@@ -158,6 +153,63 @@ public abstract class AbstractWorldMap implements WorldMap{
         for (Vector2d position : grassPositionsToRemove) {
             grasses.remove(position);
         }
+    }
+
+    public int countAnimals() {
+        int totalAnimals = 0;
+        for (HashSet<Animal> animalSet : animals.values()) {
+            totalAnimals += animalSet.size();
+        }
+        return totalAnimals;
+    }
+
+    public int countGrass() {
+        return grasses.size();
+    }
+
+    private int countOccupiedFields() {
+        HashSet<Vector2d> occupiedFields = new HashSet<>();
+        occupiedFields.addAll(animals.keySet());
+        occupiedFields.addAll(grasses.keySet());
+        return occupiedFields.size();
+    }
+
+    public int freeFields() {
+        return mapSize - countOccupiedFields();
+    }
+
+    public float averageLifespan() {
+        return deadAnimalsCount == 0 ? 0 : (float) deadAnimalsLifespan / deadAnimalsCount;
+    }
+
+    public List<Map.Entry<String, Integer>> printTop3Genotypes() {
+        // Mapa do przechowywania liczby wystąpień każdego genotypu
+        Map<String, Integer> genotypeCounts = new HashMap<>();
+
+        // Zliczanie genotypów ze wszystkich zwierząt
+        for (HashSet<Animal> animalSet : animals.values()) {
+            for (Animal animal : animalSet) {
+                String genotype = animal.getGenome().toString();
+                genotypeCounts.put(genotype, genotypeCounts.getOrDefault(genotype, 0) + 1);
+            }
+        }
+
+        // Posortowanie genotypów według liczby wystąpień (malejąco)
+        List<Map.Entry<String, Integer>> sortedGenotypes = new ArrayList<>(genotypeCounts.entrySet());
+        sortedGenotypes.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+        return sortedGenotypes;
+    }
+
+    public float calculateAverageEnergy() {
+        int totalEnergy = 0;
+        int animalCount = this.countAnimals();
+
+        for (var entry : this.getAnimals().values()) {
+            for (var animal : entry) {
+                totalEnergy += animal.getEnergy();
+            }
+        }
+        return animalCount == 0 ? 0 : (float) totalEnergy / animalCount;
     }
 
     public void applyEnergyLossToAllAnimals(int energyLoss) {

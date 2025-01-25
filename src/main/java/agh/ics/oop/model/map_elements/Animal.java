@@ -183,6 +183,10 @@ public class Animal implements WorldElement {
         updateDescendantCount(animal.parent2);
     }
 
+    public void incrementAge(){
+        this.age++;
+    }
+
     public void setParents(Animal parent1, Animal parent2){
         this.parent1 = parent1;
         this.parent2 = parent2;
