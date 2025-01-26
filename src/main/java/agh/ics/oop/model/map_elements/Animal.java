@@ -1,19 +1,18 @@
 package agh.ics.oop.model.map_elements;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Animal implements WorldElement {
+    private static final Random RANDOM = new Random();
+
     private MapDirection direction;
     private Vector2d position;
     private int energy;
 
     private int plantsEatenCount;
-
-    public int age;
-    private final int birthDay;
+    private int age;
 
     private int childrenCount;
     private int descendantCount;
@@ -23,20 +22,18 @@ public class Animal implements WorldElement {
 
     private Genome genome;
 
-    public static final Random random = new Random();
-
-    public Animal(Vector2d position, int startingEnergy,int currentDay) {
+    public Animal(Vector2d position, int startingEnergy) {
         this.direction = MapDirection.NORTH;
         this.position = position;
         this.energy = startingEnergy;
         this.childrenCount = 0;
         this.age = 0;
         this.plantsEatenCount = 0;
-        this.birthDay = currentDay;
-        parent1 = null;
-        parent2 = null;
+        this.parent1 = null;
+        this.parent2 = null;
     }
 
+    // --- Gettery ---
     public int getPlantsEatenCount() {
         return plantsEatenCount;
     }
@@ -58,10 +55,6 @@ public class Animal implements WorldElement {
         return childrenCount;
     }
 
-    public MapDirection getDirection(){
-        return direction;
-    }
-
     public int getCurrentGenomeMove() {
         return genome.nextMove();
     }
@@ -70,134 +63,136 @@ public class Animal implements WorldElement {
         return genome;
     }
 
-    public int getDescendantCount(){
+    public int getDescendantCount() {
         return descendantCount;
     }
 
+    // --- Settery ---
     public void setGenome(Genome genome) {
         this.genome = genome;
     }
 
-    public void eat(int plantEnergyValue){
-        energy += plantEnergyValue;
-        plantsEatenCount += 1;
-    }
-
-    public void energyLoss(int loss){
-        energy -= loss;
-    }
-
-    private Genome calculateNewGenome(Animal animal1, Animal animal2, int mutationCount) {
-
-        List<Integer> animal1genome = animal1.getGenome().getList();
-        List<Integer> animal2genome = animal2.getGenome().getList();
-        int genomeLength = animal2genome.size();
-
-        List<Integer> childGenome = new ArrayList<>();
-        int totalEnergy = animal1.energy + animal2.energy;
-        double thisParentRatio = (double) animal1.energy / totalEnergy;
-        int splitPoint = (int) (genomeLength * thisParentRatio);
-
-
-        boolean takeLeftFromStronger = random.nextBoolean();
-        if (takeLeftFromStronger) {
-            childGenome.addAll(animal1genome.subList(0, splitPoint));
-            childGenome.addAll(animal2genome.subList(splitPoint, genomeLength));
-        } else {
-            childGenome.addAll(animal2genome.subList(0, splitPoint));
-            childGenome.addAll(animal1genome.subList(splitPoint, genomeLength));
-        }
-
-        // Mutacje genomu potomka
-        for (int i = 0; i < mutationCount; i++) {
-            int mutationIndex = random.nextInt(genomeLength);
-            childGenome.set(mutationIndex, random.nextInt(8));
-        }
-
-        Genome output = new Genome(genomeLength);
-        output.setGenome(childGenome);
-        return output;
-    }
-
-
-    public Animal copulate(Animal secondAnimal, int energyLoss, int simulationDay, int mutationCount) {
-        // Sprawdzenie, czy oba zwierzęta mają wystarczającą energię do rozmnażania jest w simulation
-
-        // Obliczanie energii potomka i odejmowanie jej od rodziców
-        int childEnergy = energyLoss * 2;
-        this.energy -= energyLoss;
-        secondAnimal.energy -= energyLoss;
-
-        // Tworzenie nowego zwierzęcia
-        Animal child = new Animal(this.position, childEnergy,   simulationDay);
-        child.setParents(this, secondAnimal);
-
-        // Aktualizacja liczby dzieci
-        this.childrenCount++;
-        secondAnimal.childrenCount++;
-        updateDescendantCount(this);
-        updateDescendantCount(secondAnimal);
-
-        child.genome = calculateNewGenome(this, secondAnimal, mutationCount);
-        return child;
-    }
-
-    public void rotate(int number) {
-        // 0 oznacza brak obrotu
-        if (number == 0) {
-            return; // Nie zmieniaj kierunku
-        }
-
-        // Obliczamy nowy kierunek na podstawie aktualnego kierunku i liczby obrotów
-        int newDirectionIndex = (direction.ordinal() + number) % 8;
-        direction = MapDirection.values()[newDirectionIndex];
-    }
-
-
-    //move przyjmuje liczbe bo tam było ze sie zawsze najpierw obraca a potem idzie do przodu
-    public void move(int number, Boundary boundary) {
-        // Rotate first
-        rotate(number);
-
-        // Calculate potential new position q
-        Vector2d potentialPosition = position.add(direction.toUnitVector());
-
-        // Check if moving out of bounds
-        if (potentialPosition.getX() < boundary.bottomLeft().getX()) {
-            // Wrap around horizontally (left to right)
-            potentialPosition = new Vector2d(boundary.topRight().getX(), potentialPosition.getY());
-        } else if (potentialPosition.getX() > boundary.topRight().getX()) {
-            // Wrap around horizontally (right to left)
-            potentialPosition = new Vector2d(boundary.bottomLeft().getX(), potentialPosition.getY());
-        }
-
-        if (potentialPosition.getY() < boundary.bottomLeft().getY() || potentialPosition.getY() > boundary.topRight().getY()) {
-            // Hit the poles (top or bottom)
-            direction = direction.opposite(); // Reverse direction
-        } else {
-            // Move to the new position if valid
-            position = potentialPosition;
-        }
-    }
-
-    private void updateDescendantCount(Animal animal) {
-        if (animal == null) return;
-        animal.descendantCount++;
-        updateDescendantCount(animal.parent1);
-        updateDescendantCount(animal.parent2);
-    }
-
-    public void incrementAge(){
-        this.age++;
-    }
-
-    public void setParents(Animal parent1, Animal parent2){
+    public void setParents(Animal parent1, Animal parent2) {
         this.parent1 = parent1;
         this.parent2 = parent2;
     }
 
+    // --- Główne zachowanie ---
+    public void eat(int plantEnergyValue) {
+        energy += plantEnergyValue;
+        plantsEatenCount++;
+    }
+
+    public void energyLoss(int loss) {
+        energy -= loss;
+    }
+
+    public void incrementAge() {
+        age++;
+    }
+
+    public Animal copulate(Animal partner, int energyLoss, int mutationCount) {
+        // Redukcja energii rodziców
+        int childEnergy = energyLoss * 2;
+        this.energy -= energyLoss;
+        partner.energy -= energyLoss;
+
+        // Tworzenie potomka z energią rodziców i genotypem
+        Animal child = new Animal(this.position, childEnergy);
+        child.setParents(this, partner);
+        child.genome = calculateNewGenome(this, partner, mutationCount);
+
+        // Aktualizacja liczników potomków
+        this.childrenCount++;
+        partner.childrenCount++;
+        updateDescendantCount(this);
+        updateDescendantCount(partner);
+
+        return child;
+    }
+
+    public void move(int rotationSteps, Boundary boundary) {
+        rotate(rotationSteps);
+
+        Vector2d potentialPosition = position.add(direction.toUnitVector());
+        if (isOutOfBounds(potentialPosition, boundary)) {
+            position = adjustPositionForBoundary(potentialPosition, boundary);
+        } else {
+            position = potentialPosition;
+        }
+    }
+
+    public void rotate(int steps) {
+        if (steps == 0) return;
+        int newDirectionIndex = (direction.ordinal() + steps) % 8;
+        direction = MapDirection.values()[newDirectionIndex];
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         return direction.toShortString();
+    }
+
+    // --- Prywatne metody pomocnicze ---
+    private Genome calculateNewGenome(Animal parent1, Animal parent2, int mutationCount) {
+        List<Integer> parent1Genome = parent1.getGenome().getList();
+        List<Integer> parent2Genome = parent2.getGenome().getList();
+        int genomeLength = parent2Genome.size();
+
+        List<Integer> childGenome = new ArrayList<>();
+        double splitRatio = (double) parent1.energy / (parent1.energy + parent2.energy);
+        int splitPoint = (int) (genomeLength * splitRatio);
+
+        boolean takeLeftFromParent1 = RANDOM.nextBoolean();
+        if (takeLeftFromParent1) {
+            childGenome.addAll(parent1Genome.subList(0, splitPoint));
+            childGenome.addAll(parent2Genome.subList(splitPoint, genomeLength));
+        } else {
+            childGenome.addAll(parent2Genome.subList(0, splitPoint));
+            childGenome.addAll(parent1Genome.subList(splitPoint, genomeLength));
+        }
+
+        // Wprowadzenie mutacji
+        for (int i = 0; i < mutationCount; i++) {
+            int mutationIndex = RANDOM.nextInt(genomeLength);
+            childGenome.set(mutationIndex, RANDOM.nextInt(8));
+        }
+
+        Genome childGenomeObject = new Genome(genomeLength);
+        childGenomeObject.setGenome(childGenome);
+        return childGenomeObject;
+    }
+
+    private void updateDescendantCount(Animal ancestor) {
+        if (ancestor == null) return;
+        ancestor.descendantCount++;
+        updateDescendantCount(ancestor.parent1);
+        updateDescendantCount(ancestor.parent2);
+    }
+
+    private boolean isOutOfBounds(Vector2d position, Boundary boundary) {
+        return position.getX() < boundary.bottomLeft().getX() ||
+                position.getX() > boundary.topRight().getX() ||
+                position.getY() < boundary.bottomLeft().getY() ||
+                position.getY() > boundary.topRight().getY();
+    }
+
+    private Vector2d adjustPositionForBoundary(Vector2d position, Boundary boundary) {
+        int x = position.getX();
+        int y = position.getY();
+
+        // Jeśli wychodzi poza mapę z lewej, pojawia się z prawej
+        if (x < boundary.bottomLeft().getX()) {
+            x = boundary.topRight().getX();
+        } else if (x > boundary.topRight().getX()) {
+            x = boundary.bottomLeft().getX();
+        }
+
+        // Jeśli wychodzi poza mapę z dołu lub z góry, obraca się
+        if (y < boundary.bottomLeft().getY() || y > boundary.topRight().getY()) {
+            direction = direction.opposite();
+        }
+
+        return new Vector2d(x, y);
     }
 }

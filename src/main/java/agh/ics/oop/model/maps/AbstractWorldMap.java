@@ -42,7 +42,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         for (int i = 0; i < amountOfAnimals; i++) {
             int randomX = random.nextInt(mapEdges.getWidth()) + mapEdges.bottomLeft().getX();
             int randomY = random.nextInt(mapEdges.getHeight()) + mapEdges.bottomLeft().getY();
-            Animal animal = new Animal(new Vector2d(randomX, randomY), animalsEnergy, 0);
+            Animal animal = new Animal(new Vector2d(randomX, randomY), animalsEnergy);
             if (animalModification) {animal.setGenome(new CrazyGenome(genomeLength));}
             else animal.setGenome(new Genome(genomeLength));
             placeAnimal(animal);
@@ -121,7 +121,7 @@ public abstract class AbstractWorldMap implements WorldMap {
                 Animal parent2 = parents.get(1);
 
                 // Tworzenie nowego zwierzęcia przez rozmnażanie
-                Animal child = parent1.copulate(parent2, energyLoss, currentDay, mutationCount);
+                Animal child = parent1.copulate(parent2, energyLoss, mutationCount);
 
                 // Dodanie dziecka do mapy
                 placeAnimal(child);

@@ -15,7 +15,6 @@ public class Simulation {
     private final int breedingEnergyLoss;
     private final int mutationCount;
     private final int plantEnergy;
-    private final boolean animalModification;
     private final int dailyEnergyLoss;
 
     public Simulation(int width, int height, int jungleHeight, boolean mapModification, boolean animalModification,
@@ -29,7 +28,6 @@ public class Simulation {
         this.breedingEnergyLoss = breedingEnergyLoss;
         this.mutationCount = mutationCount;
         this.plantEnergy = plantEnergy;
-        this.animalModification = animalModification;
         this.dailyEnergyLoss = dailyEnergyLoss;
 
         // Walidacja wysokości dżungli

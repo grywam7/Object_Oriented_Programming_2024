@@ -135,18 +135,16 @@ public class SimulationView extends HBox {
 
         // Rysowanie zwierząt
         int energy = simulation.getSufficientEnergy();
-        map.getAnimals().forEach((position, animals) -> {
-            animals.forEach(animal -> {
-                if (animal.getEnergy() >= 2 * energy) {
-                    gc.setFill(Color.rgb(255, 55, 55));
-                } else if (animal.getEnergy() >= energy) {
-                    gc.setFill(Color.RED);
-                } else {
-                    gc.setFill(Color.DARKRED);
-                }
-                gc.fillOval(position.getX() * cellWidth, position.getY() * cellHeight, cellWidth, cellHeight);
-            });
-        });
+        map.getAnimals().forEach((position, animals) -> animals.forEach(animal -> {
+            if (animal.getEnergy() >= 2 * energy) {
+                gc.setFill(Color.rgb(255, 55, 55));
+            } else if (animal.getEnergy() >= energy) {
+                gc.setFill(Color.RED);
+            } else {
+                gc.setFill(Color.DARKRED);
+            }
+            gc.fillOval(position.getX() * cellWidth, position.getY() * cellHeight, cellWidth, cellHeight);
+        }));
 
         updateStats();
     }

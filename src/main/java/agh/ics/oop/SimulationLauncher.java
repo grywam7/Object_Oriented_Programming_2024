@@ -5,6 +5,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import javafx.stage.FileChooser;
 
 public class SimulationLauncher extends Application {
     private Stage primaryStage;
@@ -20,11 +27,12 @@ public class SimulationLauncher extends Application {
     }
 
     private void showSettingsWindow() {
+
         GridPane settingsPane = new GridPane();
         settingsPane.setVgap(10);
         settingsPane.setHgap(10);
 
-        // Input fields for simulation parameters
+        // Pola wprowadzania parametrów symulacji
         TextField widthField = createLabeledField(settingsPane, "Width:", 1);
         TextField heightField = createLabeledField(settingsPane, "Height:", 2);
         TextField jungleHeightField = createLabeledField(settingsPane, "Jungle Height:", 3);
@@ -80,7 +88,53 @@ public class SimulationLauncher extends Application {
         });
         settingsPane.add(startButton, 0, 18);
 
+        Button saveConfigButton = new Button("Save Configuration");
+        saveConfigButton.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Configuration");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+            File file = fileChooser.showSaveDialog(primaryStage);
+            if (file != null) {
+                SimulationConfig config = new SimulationConfig();
+                configFromFields(config, widthField, heightField, jungleHeightField, initialPlantsField,
+                        plantEnergyField, dailyPlantsField, initialAnimalsField, animalEnergyField,
+                        sufficientEnergyField, breedingEnergyLossField, mutationCountField, genomeLengthField,
+                        targetDayField, dailyEnergyLossField, mapModificationCheckbox, animalModificationCheckbox);
 
+                saveConfig(config, file);
+            }
+        });
+
+        Button loadConfigButton = new Button("Load Configuration");
+        loadConfigButton.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Load Configuration");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+            File file = fileChooser.showOpenDialog(primaryStage);
+            if (file != null) {
+                SimulationConfig config = loadConfig(file);
+                if (config != null) {
+                    fieldsFromConfig(config, widthField, heightField, jungleHeightField, initialPlantsField,
+                            plantEnergyField, dailyPlantsField, initialAnimalsField, animalEnergyField,
+                            sufficientEnergyField, breedingEnergyLossField, mutationCountField, genomeLengthField,
+                            targetDayField, dailyEnergyLossField, mapModificationCheckbox, animalModificationCheckbox);
+                }
+            }
+        });
+
+        settingsPane.add(saveConfigButton, 0, 17);
+        settingsPane.add(loadConfigButton, 1, 17);
+
+        Button defaultButton = getDefaultButton(mapModificationCheckbox, animalModificationCheckbox);
+        settingsPane.add(defaultButton, 1, 18);
+
+        Scene settingsScene = new Scene(settingsPane, 500, 700);
+        primaryStage.setTitle("Simulation Settings");
+        primaryStage.setScene(settingsScene);
+        primaryStage.show();
+    }
+
+    private Button getDefaultButton(CheckBox mapModificationCheckbox, CheckBox animalModificationCheckbox) {
         Button defaultButton = new Button("Run Default Parameters");
         defaultButton.setOnAction(event -> {
             int width = 60;
@@ -107,12 +161,7 @@ public class SimulationLauncher extends Application {
 
             showSimulationWindow(simulation);
         });
-        settingsPane.add(defaultButton, 1, 18);
-
-        Scene settingsScene = new Scene(settingsPane, 500, 700);
-        primaryStage.setTitle("Simulation Settings");
-        primaryStage.setScene(settingsScene);
-        primaryStage.show();
+        return defaultButton;
     }
 
     private void showSimulationWindow(Simulation simulation) {
@@ -123,18 +172,12 @@ public class SimulationLauncher extends Application {
         simulationStage.setTitle("Simulation");
         simulationStage.setScene(simulationScene);
 
-        // Zatrzymanie symulacji przy zamknięciu okna
-        simulationStage.setOnCloseRequest(event -> {
-            simulationView.stopSimulation();
-        });
+        simulationStage.setOnCloseRequest(event -> simulationView.stopSimulation());
 
         new Thread(simulationView::runSimulation).start();
 
         simulationStage.show();
     }
-
-
-
 
     private TextField createLabeledField(GridPane pane, String labelText, int row) {
         Label label = new Label(labelText);
@@ -150,5 +193,76 @@ public class SimulationLauncher extends Application {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void saveConfig(SimulationConfig config, File file) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (FileWriter writer = new FileWriter(file)) {
+            gson.toJson(config, writer);
+        } catch (IOException e) {
+            showError("Failed to save configuration: " + e.getMessage());
+        }
+    }
+
+    private SimulationConfig loadConfig(File file) {
+        Gson gson = new Gson();
+        try (FileReader reader = new FileReader(file)) {
+            return gson.fromJson(reader, SimulationConfig.class);
+        } catch (IOException e) {
+            showError("Failed to load configuration: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private void configFromFields(SimulationConfig config, TextField widthField, TextField heightField,
+                                  TextField jungleHeightField, TextField initialPlantsField,
+                                  TextField plantEnergyField, TextField dailyPlantsField,
+                                  TextField initialAnimalsField, TextField animalEnergyField,
+                                  TextField sufficientEnergyField, TextField breedingEnergyLossField,
+                                  TextField mutationCountField, TextField genomeLengthField,
+                                  TextField targetDayField, TextField dailyEnergyLossField,
+                                  CheckBox mapModificationCheckbox, CheckBox animalModificationCheckbox) {
+        config.width = Integer.parseInt(widthField.getText());
+        config.height = Integer.parseInt(heightField.getText());
+        config.jungleHeight = Integer.parseInt(jungleHeightField.getText());
+        config.initialPlants = Integer.parseInt(initialPlantsField.getText());
+        config.plantEnergy = Integer.parseInt(plantEnergyField.getText());
+        config.dailyPlants = Integer.parseInt(dailyPlantsField.getText());
+        config.initialAnimals = Integer.parseInt(initialAnimalsField.getText());
+        config.animalEnergy = Integer.parseInt(animalEnergyField.getText());
+        config.sufficientEnergy = Integer.parseInt(sufficientEnergyField.getText());
+        config.breedingEnergyLoss = Integer.parseInt(breedingEnergyLossField.getText());
+        config.mutationCount = Integer.parseInt(mutationCountField.getText());
+        config.genomeLength = Integer.parseInt(genomeLengthField.getText());
+        config.targetDay = Integer.parseInt(targetDayField.getText());
+        config.dailyEnergyLoss = Integer.parseInt(dailyEnergyLossField.getText());
+        config.mapModification = mapModificationCheckbox.isSelected();
+        config.animalModification = animalModificationCheckbox.isSelected();
+    }
+
+    private void fieldsFromConfig(SimulationConfig config, TextField widthField, TextField heightField,
+                                  TextField jungleHeightField, TextField initialPlantsField,
+                                  TextField plantEnergyField, TextField dailyPlantsField,
+                                  TextField initialAnimalsField, TextField animalEnergyField,
+                                  TextField sufficientEnergyField, TextField breedingEnergyLossField,
+                                  TextField mutationCountField, TextField genomeLengthField,
+                                  TextField targetDayField, TextField dailyEnergyLossField,
+                                  CheckBox mapModificationCheckbox, CheckBox animalModificationCheckbox) {
+        widthField.setText(String.valueOf(config.width));
+        heightField.setText(String.valueOf(config.height));
+        jungleHeightField.setText(String.valueOf(config.jungleHeight));
+        initialPlantsField.setText(String.valueOf(config.initialPlants));
+        plantEnergyField.setText(String.valueOf(config.plantEnergy));
+        dailyPlantsField.setText(String.valueOf(config.dailyPlants));
+        initialAnimalsField.setText(String.valueOf(config.initialAnimals));
+        animalEnergyField.setText(String.valueOf(config.animalEnergy));
+        sufficientEnergyField.setText(String.valueOf(config.sufficientEnergy));
+        breedingEnergyLossField.setText(String.valueOf(config.breedingEnergyLoss));
+        mutationCountField.setText(String.valueOf(config.mutationCount));
+        genomeLengthField.setText(String.valueOf(config.genomeLength));
+        targetDayField.setText(String.valueOf(config.targetDay));
+        dailyEnergyLossField.setText(String.valueOf(config.dailyEnergyLoss));
+        mapModificationCheckbox.setSelected(config.mapModification);
+        animalModificationCheckbox.setSelected(config.animalModification);
     }
 }
