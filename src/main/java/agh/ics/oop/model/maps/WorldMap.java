@@ -28,5 +28,5 @@ public interface WorldMap {
 
 
 
-    String getID();
+    //String getID();
 }

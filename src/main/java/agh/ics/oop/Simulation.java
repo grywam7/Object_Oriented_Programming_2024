@@ -96,4 +96,6 @@ public class Simulation {
     public int getCurrentDay() {
         return currentDay;
     }
+
+    public int getSufficientEnergy(){return sufficientEnergy;}
 }

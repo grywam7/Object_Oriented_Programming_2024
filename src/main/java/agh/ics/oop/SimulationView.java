@@ -121,6 +121,12 @@ public class SimulationView extends HBox {
         double cellWidth = canvas.getWidth() / map.getMapEdges().getWidth();
         double cellHeight = canvas.getHeight() / map.getMapEdges().getHeight();
 
+        //Oznaczenie priorytetowych miejsc
+        map.getPriorityPlaces().forEach(position -> {
+            gc.setFill(Color.LIGHTGREEN); // Kolor dla priorytetowych miejsc
+            gc.fillRect(position.getX() * cellWidth, position.getY() * cellHeight, cellWidth, cellHeight);
+        });
+
         // Rysowanie trawy
         map.getGrasses().forEach((position, grass) -> {
             gc.setFill(Color.GREEN);
@@ -128,13 +134,23 @@ public class SimulationView extends HBox {
         });
 
         // Rysowanie zwierząt
+        int energy = simulation.getSufficientEnergy();
         map.getAnimals().forEach((position, animals) -> {
-            gc.setFill(Color.RED);
-            gc.fillOval(position.getX() * cellWidth, position.getY() * cellHeight, cellWidth, cellHeight);
+            animals.forEach(animal -> {
+                if (animal.getEnergy() >= 2 * energy) {
+                    gc.setFill(Color.rgb(255, 55, 55));
+                } else if (animal.getEnergy() >= energy) {
+                    gc.setFill(Color.RED);
+                } else {
+                    gc.setFill(Color.DARKRED);
+                }
+                gc.fillOval(position.getX() * cellWidth, position.getY() * cellHeight, cellWidth, cellHeight);
+            });
         });
 
         updateStats();
     }
+
 
     private void updateStats() {
         AbstractWorldMap map = simulation.getWorldMap();
@@ -142,7 +158,7 @@ public class SimulationView extends HBox {
         int animalCount = map.countAnimals();
         int grassCount = map.countGrass();
         int freeFields = map.freeFields();
-        List<Map.Entry<String, Integer>> topGenotypes = map.printTop3Genotypes();
+        List<Map.Entry<String, Integer>> topGenotypes = map.printTopGenotypes();
         float avgEnergy = (float) animalCount == 0 ? 0 : map.calculateAverageEnergy();
         float avgLifespan = map.averageLifespan();
         float avgChildren = calculateAverageChildren(map);
