@@ -219,6 +219,15 @@ public abstract class AbstractWorldMap implements WorldMap{
             }
         }
     }
+    public List<Animal> getAnimalsAt(Vector2d position) {
+        // Pobieramy zwierzęta z mapy, jeśli istnieją na danej pozycji
+        HashSet<Animal> animalsAtPosition = animals.get(position);
+        if (animalsAtPosition == null) {
+            return Collections.emptyList(); // Jeśli brak zwierząt, zwracamy pustą listę
+        }
+        return new ArrayList<>(animalsAtPosition); // Konwertujemy do listy
+    }
+
     public void placeGrass(Vector2d position) {
         grasses.put(position, new Grass(position));
     }

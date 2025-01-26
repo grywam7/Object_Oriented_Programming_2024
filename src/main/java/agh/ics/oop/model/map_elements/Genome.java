@@ -22,6 +22,10 @@ public class Genome {
         return move;
     }
 
+    public int getCurrentGenomeIndex() {
+        return this.currentGenomeIndex;
+    }
+
     public void setGenome(List<Integer> genome) {
         this.list = genome;
     }

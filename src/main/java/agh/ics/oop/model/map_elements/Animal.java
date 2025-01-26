@@ -70,6 +70,10 @@ public class Animal implements WorldElement {
         return genome;
     }
 
+    public int getDescendantCount(){
+        return descendantCount;
+    }
+
     public void setGenome(Genome genome) {
         this.genome = genome;
     }
@@ -196,21 +200,4 @@ public class Animal implements WorldElement {
     public String toString(){
         return direction.toShortString();
     }
-
-    public String getStats() {
-        return String.format(
-                "Animal Stats:%n" +
-                        "Position: %s%n" +
-                        "Direction: %s%n" +
-                        "Energy: %d%n" +
-                        "Age: %d%n" +
-                        "Plants Eaten: %d%n" +
-                        "Children Count: %d%n" +
-                        "Descendant Count: %d%n" +
-                        "Birth Day: %d%n" +
-                        "Genome: %s",
-                position, direction, energy, age, plantsEatenCount, childrenCount, descendantCount, birthDay, genome.toString()
-        );
-    }
-
 }

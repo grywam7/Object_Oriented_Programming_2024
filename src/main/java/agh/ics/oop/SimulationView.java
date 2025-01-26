@@ -1,15 +1,18 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.maps.AbstractWorldMap;
+import agh.ics.oop.model.map_elements.Animal;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import agh.ics.oop.model.map_elements.Vector2d;
 
 import java.util.List;
 import java.util.Map;
@@ -18,8 +21,7 @@ public class SimulationView extends HBox {
     private final Simulation simulation;
     private final Canvas canvas;
 
-    // Etykiety statystyk
-    private final Label titleLabel = new Label("Statystyki");
+    //statystyki mapy
     private final Label dayLabel = new Label("Day: 0");
     private final Label animalCountLabel = new Label("Animals: 0");
     private final Label grassCountLabel = new Label("Grass: 0");
@@ -27,19 +29,32 @@ public class SimulationView extends HBox {
     private final Label avgEnergyLabel = new Label("Avg energy: 0");
     private final Label avgLifespanLabel = new Label("Avg lifespan: 0");
     private final Label avgChildrenLabel = new Label("Avg children: 0");
-    private final VBox genotypesBox = new VBox(); // Osobny VBox na genotypy
+    private final VBox genotypesBox = new VBox();
 
-    private volatile boolean running = true; // Czy symulacja działa
-    private volatile boolean paused = false; // Czy symulacja jest wstrzymana
+    //statystyki zwierząt
+    private final Label animalEnergyLabel = new Label("Energy: N/A");
+    private final Label animalChildrenLabel = new Label("Children: N/A");
+    private final Label animalGenotypeLabel = new Label("Genotype: N/A");
+    private final Label animalActiveGeneLabel = new Label("Active Gene: N/A");
+    private final Label animalEatenPlantsLabel = new Label("Eaten Plants: N/A");
+    private final Label animalDescendantsLabel = new Label("Descendants: N/A");
+    private final Label animalAgeLabel = new Label("Age: N/A");
+
+    private volatile boolean running = true;
+    private volatile boolean paused = false;
+
+    private Animal selectedAnimal;
 
     public SimulationView(Simulation simulation) {
         this.simulation = simulation;
         this.canvas = new Canvas(620, 620);
 
         // Stylizacja statystyk
+        // Etykiety statystyk
+        Label titleLabel = new Label("Statystyki");
         titleLabel.setFont(new Font("Arial", 20));
         titleLabel.setStyle("-fx-font-weight: bold;");
-        VBox statsPanel = new VBox(10); // 10px odstępu między elementami
+        VBox statsPanel = new VBox(10);
         statsPanel.setPadding(new Insets(10));
         statsPanel.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-background-color: #f4f4f4;");
         statsPanel.getChildren().addAll(
@@ -52,21 +67,37 @@ public class SimulationView extends HBox {
                 avgLifespanLabel,
                 avgChildrenLabel,
                 new Label("Top genotypes:"),
-                genotypesBox // Dodanie VBoxa na genotypy
+                genotypesBox
         );
 
-        // Panel sterowania (pauza i stop)
-        HBox controls = new HBox(10); // Odstęp między przyciskami
+        // Panel zwierzęcia
+        Label selectedAnimalTitle = new Label("Selected Animal Stats");
+        selectedAnimalTitle.setFont(new Font("Arial", 20));
+        selectedAnimalTitle.setStyle("-fx-font-weight: bold;");
+        VBox selectedAnimalBox = new VBox();
+        selectedAnimalBox.setPadding(new Insets(10));
+        selectedAnimalBox.setSpacing(5);
+        selectedAnimalBox.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-background-color: #f9f9f9;");
+        selectedAnimalBox.getChildren().addAll(
+                selectedAnimalTitle,
+                animalEnergyLabel,
+                animalChildrenLabel,
+                animalGenotypeLabel,
+                animalActiveGeneLabel,
+                animalEatenPlantsLabel,
+                animalDescendantsLabel,
+                animalAgeLabel
+        );
+
+        // Panel sterowania
+        HBox controls = new HBox(10);
         Button pauseButton = new Button("Pause");
         pauseButton.setOnAction(event -> {
-            paused = !paused; // Przełączanie między pauzą a wznowieniem
+            paused = !paused;
             pauseButton.setText(paused ? "Resume" : "Pause");
         });
 
-        Button stopButton = new Button("Stop");
-        stopButton.setOnAction(event -> stopSimulation());
-
-        controls.getChildren().addAll(pauseButton, stopButton);
+        controls.getChildren().addAll(pauseButton);
 
         // Główne okno
         VBox mapArea = new VBox(10);
@@ -74,7 +105,10 @@ public class SimulationView extends HBox {
         mapArea.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
         mapArea.getChildren().addAll(canvas, controls);
 
-        this.getChildren().addAll(mapArea, statsPanel); // Dodanie mapy i panelu statystyk
+        // Obsługa kliknięć na mapie
+        canvas.setOnMouseClicked(this::handleMapClick);
+
+        this.getChildren().addAll(mapArea, statsPanel, selectedAnimalBox);
         draw();
     }
 
@@ -99,7 +133,6 @@ public class SimulationView extends HBox {
             gc.fillOval(position.getX() * cellWidth, position.getY() * cellHeight, cellWidth, cellHeight);
         });
 
-        // Aktualizacja statystyk
         updateStats();
     }
 
@@ -114,7 +147,6 @@ public class SimulationView extends HBox {
         float avgLifespan = map.averageLifespan();
         float avgChildren = calculateAverageChildren(map);
 
-        // Aktualizacja etykiet
         Platform.runLater(() -> {
             dayLabel.setText("Day: " + day);
             animalCountLabel.setText("Animals: " + animalCount);
@@ -124,14 +156,48 @@ public class SimulationView extends HBox {
             avgLifespanLabel.setText(String.format("Avg lifespan: %.2f", avgLifespan));
             avgChildrenLabel.setText(String.format("Avg children: %.2f", avgChildren));
 
-            // Wyświetlenie genotypów w osobnych wierszach
-            genotypesBox.getChildren().clear(); // Usunięcie starych genotypów
+            genotypesBox.getChildren().clear();
             for (Map.Entry<String, Integer> entry : topGenotypes) {
                 Label genotypeLabel = new Label(entry.getKey() + " (" + entry.getValue() + ")");
                 genotypeLabel.setFont(new Font("Arial", 12));
                 genotypesBox.getChildren().add(genotypeLabel);
             }
+
+            if (selectedAnimal != null) {
+            animalEnergyLabel.setText("Energy: " + selectedAnimal.getEnergy());
+            animalChildrenLabel.setText("Children: " + selectedAnimal.getChildrenCount());
+            animalGenotypeLabel.setText("Genotype: " + selectedAnimal.getGenome());
+            animalActiveGeneLabel.setText("Used genome index: " + selectedAnimal.getGenome().getCurrentGenomeIndex());
+            animalEatenPlantsLabel.setText("Plants eaten: " + selectedAnimal.getPlantsEatenCount());
+            animalDescendantsLabel.setText("Descendant count: " + selectedAnimal.getDescendantCount());
+            animalAgeLabel.setText("Age: " + selectedAnimal.getAge());
+            }
         });
+    }
+
+    private void handleMapClick(MouseEvent event) {
+        AbstractWorldMap map = simulation.getWorldMap();
+
+        double cellWidth = canvas.getWidth() / map.getMapEdges().getWidth();
+        double cellHeight = canvas.getHeight() / map.getMapEdges().getHeight();
+
+        int clickedX = (int) (event.getX() / cellWidth);
+        int clickedY = (int) (event.getY() / cellHeight);
+
+        var animalsAtPosition = map.getAnimalsAt(new Vector2d(clickedX, clickedY));
+        if (animalsAtPosition != null && !animalsAtPosition.isEmpty()) {
+            selectedAnimal = animalsAtPosition.getFirst();
+
+            Platform.runLater(() -> {
+                animalEnergyLabel.setText("Energy: " + selectedAnimal.getEnergy());
+                animalChildrenLabel.setText("Children: " + selectedAnimal.getChildrenCount());
+                animalGenotypeLabel.setText("Genotype: " + selectedAnimal.getGenome());
+                animalActiveGeneLabel.setText("Used genome index: " + selectedAnimal.getGenome().getCurrentGenomeIndex());
+                animalEatenPlantsLabel.setText("Plants eaten: " + selectedAnimal.getPlantsEatenCount());
+                animalDescendantsLabel.setText("Descendant count: " + selectedAnimal.getDescendantCount());
+                animalAgeLabel.setText("Age: " + selectedAnimal.getAge());
+            });
+        }
     }
 
     private float calculateAverageChildren(AbstractWorldMap map) {
@@ -152,7 +218,7 @@ public class SimulationView extends HBox {
                 Platform.runLater(this::draw);
             }
             try {
-                Thread.sleep(500); // 500ms na krok symulacji
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
@@ -161,6 +227,6 @@ public class SimulationView extends HBox {
     }
 
     public void stopSimulation() {
-        running = false; // Zatrzymuje symulację
+        running = false;
     }
 }
