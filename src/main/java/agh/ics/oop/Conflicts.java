@@ -7,9 +7,9 @@ public class Conflicts {
 
     private static final Random random = new Random();
 
-    // Metoda rozwiązywania konfliktu o jedzenie
-    public Animal resolveFoodConflict(List<Animal> animals) {
-        if (animals.isEmpty()) return null;
+    // Metoda pomocnicza do sortowania i wybierania zwierząt z najwyższą energią
+    private List<Animal> getTopCandidates(List<Animal> animals) {
+        if (animals.isEmpty()) return Collections.emptyList();
 
         // Sortowanie zwierząt według kryteriów: energia, wiek, liczba dzieci
         animals.sort(Comparator.comparingInt(Animal::getEnergy).reversed()
@@ -17,7 +17,7 @@ public class Conflicts {
                 .thenComparingInt(Animal::getChildrenCount).reversed());
 
         // Pobranie maksymalnej energii
-        int maxEnergy = animals.get(0).getEnergy();
+        int maxEnergy = animals.getFirst().getEnergy();
 
         // Wybranie zwierząt z najwyższą energią
         List<Animal> topCandidates = new ArrayList<>();
@@ -28,36 +28,29 @@ public class Conflicts {
                 break;
             }
         }
+
+        return topCandidates;
+    }
+
+    // Metoda rozwiązywania konfliktu o jedzenie
+    public Animal resolveFoodConflict(List<Animal> animals) {
+        List<Animal> topCandidates = getTopCandidates(animals);
+
+        if (topCandidates.isEmpty()) return null;
 
         // Jeżeli jest remis, wybór losowego zwierzaka
         if (topCandidates.size() > 1) {
             return topCandidates.get(random.nextInt(topCandidates.size()));
         }
 
-        return topCandidates.get(0); // Zwierzę z najwyższą energią
+        return topCandidates.getFirst(); // Zwierzę z najwyższą energią
     }
 
     // Metoda rozwiązywania konfliktu o rozmnażanie
     public List<Animal> resolveReproductionConflict(List<Animal> animals) {
         if (animals.size() < 2) return Collections.emptyList();
 
-        // Sortowanie zwierząt według kryteriów: energia, wiek, liczba dzieci
-        animals.sort(Comparator.comparingInt(Animal::getEnergy).reversed()
-                .thenComparingInt(Animal::getAge).reversed()
-                .thenComparingInt(Animal::getChildrenCount).reversed());
-
-        // Pobranie maksymalnej energii
-        int maxEnergy = animals.get(0).getEnergy();
-
-        // Wybranie zwierząt z najwyższą energią
-        List<Animal> topCandidates = new ArrayList<>();
-        for (Animal animal : animals) {
-            if (animal.getEnergy() == maxEnergy) {
-                topCandidates.add(animal);
-            } else {
-                break;
-            }
-        }
+        List<Animal> topCandidates = getTopCandidates(animals);
 
         if (topCandidates.size() > 2) {
             // Jeżeli więcej niż dwa mają remis, losowy wybór dwóch zwierząt

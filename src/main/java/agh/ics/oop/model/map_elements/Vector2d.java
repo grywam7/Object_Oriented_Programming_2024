@@ -66,17 +66,4 @@ public class Vector2d {
     public int hashCode() {
         return java.util.Objects.hash(x, y);
     }
-
-    public List<Vector2d> getNeighbors() {
-        List<Vector2d> neighbors = new ArrayList<>();
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dy = -1; dy <= 1; dy++) {
-                if (!(dx == 0 && dy == 0)) { // Ignoruj samego siebie
-                    neighbors.add(new Vector2d(this.x + dx, this.y + dy));
-                }
-            }
-        }
-        return neighbors;
-    }
-
 }
