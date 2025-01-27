@@ -1,7 +1,5 @@
 package agh.ics.oop.model.map_elements;
 
-import java.util.*;
-
 public class Vector2d {
     private final int x;
     private final int y;
@@ -23,32 +21,12 @@ public class Vector2d {
         return String.format("(%d,%d)", x, y);
     }
 
-    public Boolean precedes(Vector2d other) {
-        return other.x >= x && other.y >= y;
-    }
-
-    public Boolean follows(Vector2d other) {
-        return other.x <= x && other.y <= y;
-    }
-
     public Vector2d add(Vector2d other) {
         return new Vector2d(x + other.x, y + other.y);
     }
 
     public Vector2d subtract(Vector2d other) {
         return new Vector2d(x - other.x, y - other.y);
-    }
-
-    public Vector2d upperRight(Vector2d other) {
-        return new Vector2d(Math.max(x, other.x), Math.max(y, other.y));
-    }
-
-    public Vector2d lowerLeft(Vector2d other) {
-        return new Vector2d(Math.min(x, other.x), Math.min(y, other.y));
-    }
-
-    public Vector2d opposite(){
-        return new Vector2d(-x,-y);
     }
 
     @Override

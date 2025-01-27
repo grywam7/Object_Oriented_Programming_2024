@@ -1,6 +1,5 @@
 package agh.ics.oop.model.map_elements;
 
-
 public class CrazyGenome extends Genome {
     public CrazyGenome(int genomeLength) {
         super(genomeLength);
@@ -13,7 +12,7 @@ public class CrazyGenome extends Genome {
             return super.nextMove();
         } else {
             // 20% szansy na losowy indeks
-            this.currentGenomeIndex = random.nextInt(this.getLenght());
+            this.currentGenomeIndex = random.nextInt(this.getLength());
             return list.get(this.currentGenomeIndex);
         }
     }

@@ -172,9 +172,9 @@ public class Animal implements WorldElement {
 
     private boolean isOutOfBounds(Vector2d position, Boundary boundary) {
         return position.getX() < boundary.bottomLeft().getX() ||
-                position.getX() > boundary.topRight().getX() ||
-                position.getY() < boundary.bottomLeft().getY() ||
-                position.getY() > boundary.topRight().getY();
+            position.getX() > boundary.topRight().getX() ||
+            position.getY() < boundary.bottomLeft().getY() ||
+            position.getY() > boundary.topRight().getY();
     }
 
     private Vector2d adjustPositionForBoundary(Vector2d position, Boundary boundary) {

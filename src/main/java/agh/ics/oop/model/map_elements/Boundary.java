@@ -2,7 +2,6 @@ package agh.ics.oop.model.map_elements;
 
 public record Boundary(Vector2d bottomLeft, Vector2d topRight) {
 
-
     public int getWidth() {return topRight.subtract(bottomLeft).getX() + 1;}
 
     public int getHeight() {

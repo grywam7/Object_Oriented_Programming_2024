@@ -9,7 +9,6 @@ public class Genome {
     int currentGenomeIndex = 0;
     public static final Random random = new Random();
 
-
     public Genome(int genomeLength) {
         for (int i = 0; i < genomeLength; i++) {
             list.add(random.nextInt(8)); // Wartości od 0 do 7
@@ -34,7 +33,7 @@ public class Genome {
         return list;
     }
 
-    public int getLenght(){
+    public int getLength(){
         return list.size();
     }
 
