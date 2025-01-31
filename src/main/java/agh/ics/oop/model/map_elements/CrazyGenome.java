@@ -6,7 +6,7 @@ public class CrazyGenome extends Genome {
     }
 
     @Override
-    public int nextMove(){
+    public int nextMove() {
         if (random.nextInt(100) < 80) {
             // 80% szansy na przejście do kolejnego genu w kolejności
             return super.nextMove();

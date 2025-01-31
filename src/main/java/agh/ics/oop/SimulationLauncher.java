@@ -7,10 +7,12 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import javafx.stage.FileChooser;
 
 public class SimulationLauncher extends Application {
@@ -85,7 +87,7 @@ public class SimulationLauncher extends Application {
             } catch (NumberFormatException e) {
                 showError("Invalid input! Please enter valid numbers.");
             }
-        });
+        }); // to jest za długie na lambdę
         settingsPane.add(startButton, 0, 18);
 
         Button saveConfigButton = new Button("Save Configuration");
@@ -132,7 +134,7 @@ public class SimulationLauncher extends Application {
         primaryStage.setTitle("Simulation Settings");
         primaryStage.setScene(settingsScene);
         primaryStage.show();
-    }
+    } // przerośnięta metoda
 
     private Button getDefaultButton(CheckBox mapModificationCheckbox, CheckBox animalModificationCheckbox) {
         Button defaultButton = new Button("Run Default Parameters");

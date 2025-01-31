@@ -1,9 +1,10 @@
 package agh.ics.oop;
 
 import java.util.*;
+
 import agh.ics.oop.model.map_elements.Animal;
 
-public class Conflicts {
+public class Conflicts { // nazwa
 
     private static final Random random = new Random();
 
@@ -25,7 +26,7 @@ public class Conflicts {
             if (animal.getEnergy() == maxEnergy) {
                 topCandidates.add(animal);
             } else {
-                break;
+                break; // i źle działa
             }
         }
 

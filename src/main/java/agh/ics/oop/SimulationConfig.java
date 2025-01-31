@@ -3,9 +3,9 @@ package agh.ics.oop;
 import java.io.Serializable;
 
 public class SimulationConfig implements Serializable {
-    public int width;
-    public int height;
-    public int jungleHeight;
+    public int width; // publiczny modyfikowalny atrybut?
+    public int height; // i jeszcze jeden?
+    public int jungleHeight; // i jeszcze dużo?
     public int initialPlants;
     public int plantEnergy;
     public int dailyPlants;

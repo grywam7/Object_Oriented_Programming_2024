@@ -68,11 +68,11 @@ public class Animal implements WorldElement {
     }
 
     // --- Settery ---
-    public void setGenome(Genome genome) {
+    public void setGenome(Genome genome) { // szalony naukowiec zmienia genotyp żywemu zwierzęciu?
         this.genome = genome;
     }
 
-    public void setParents(Animal parent1, Animal parent2) {
+    public void setParents(Animal parent1, Animal parent2) { // to nawet nie wiem, jak interpretować
         this.parent1 = parent1;
         this.parent2 = parent2;
     }
@@ -91,7 +91,7 @@ public class Animal implements WorldElement {
         age++;
     }
 
-    public Animal copulate(Animal partner, int energyLoss, int mutationCount) {
+    public Animal copulate(Animal partner, int energyLoss, int mutationCount) { // nie bardziej elegancko zrobić metodę statyczną?
         // Redukcja energii rodziców
         int childEnergy = energyLoss * 2;
         this.energy -= energyLoss;
@@ -134,7 +134,7 @@ public class Animal implements WorldElement {
     }
 
     // --- Prywatne metody pomocnicze ---
-    private Genome calculateNewGenome(Animal parent1, Animal parent2, int mutationCount) {
+    private Genome calculateNewGenome(Animal parent1, Animal parent2, int mutationCount) { // czy to nie powinno być w genomie?
         List<Integer> parent1Genome = parent1.getGenome().getList();
         List<Integer> parent2Genome = parent2.getGenome().getList();
         int genomeLength = parent2Genome.size();
@@ -172,12 +172,12 @@ public class Animal implements WorldElement {
 
     private boolean isOutOfBounds(Vector2d position, Boundary boundary) {
         return position.getX() < boundary.bottomLeft().getX() ||
-            position.getX() > boundary.topRight().getX() ||
-            position.getY() < boundary.bottomLeft().getY() ||
-            position.getY() > boundary.topRight().getY();
+                position.getX() > boundary.topRight().getX() ||
+                position.getY() < boundary.bottomLeft().getY() ||
+                position.getY() > boundary.topRight().getY();
     }
 
-    private Vector2d adjustPositionForBoundary(Vector2d position, Boundary boundary) {
+    private Vector2d adjustPositionForBoundary(Vector2d position, Boundary boundary) { // czy to zadanie dla zwierzęcia?
         int x = position.getX();
         int y = position.getY();
 

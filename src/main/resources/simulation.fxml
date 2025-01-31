@@ -14,8 +14,8 @@
             fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <top>
         <HBox spacing="10">
-            <TextField fx:id="movesTextField" promptText="Enter moves (e.g. F,R,L)" />
-            <Label fx:id="statusLabel" text="Status messages will appear here!" />
+            <TextField fx:id="movesTextField" promptText="Enter moves (e.g. F,R,L)"/>
+            <Label fx:id="statusLabel" text="Status messages will appear here!"/>
         </HBox>
     </top>
 

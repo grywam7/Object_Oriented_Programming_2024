@@ -41,7 +41,7 @@ class CrawlingJungleMapTest {
         // Let's define the expected neighbors
         Set<Vector2d> expectedNeighbors = Set.of(
                 new Vector2d(2, 2), new Vector2d(2, 3), new Vector2d(2, 4),
-                new Vector2d(3, 2),                    new Vector2d(3, 4),
+                new Vector2d(3, 2), new Vector2d(3, 4),
                 new Vector2d(4, 2), new Vector2d(4, 3), new Vector2d(4, 4)
         );
 

@@ -1,4 +1,4 @@
-package agh.ics.oop;
+package agh.ics.oop; // czy ta klasa powinna być w głównym pakiecie?
 
 import agh.ics.oop.model.maps.AbstractWorldMap;
 import agh.ics.oop.model.map_elements.Animal;
@@ -178,13 +178,13 @@ public class SimulationView extends HBox {
             }
 
             if (selectedAnimal != null) {
-            animalEnergyLabel.setText("Energy: " + selectedAnimal.getEnergy());
-            animalChildrenLabel.setText("Children: " + selectedAnimal.getChildrenCount());
-            animalGenotypeLabel.setText("Genotype: " + selectedAnimal.getGenome());
-            animalActiveGeneLabel.setText("Used genome index: " + selectedAnimal.getGenome().getCurrentGenomeIndex());
-            animalEatenPlantsLabel.setText("Plants eaten: " + selectedAnimal.getPlantsEatenCount());
-            animalDescendantsLabel.setText("Descendant count: " + selectedAnimal.getDescendantCount());
-            animalAgeLabel.setText("Age: " + selectedAnimal.getAge());
+                animalEnergyLabel.setText("Energy: " + selectedAnimal.getEnergy());
+                animalChildrenLabel.setText("Children: " + selectedAnimal.getChildrenCount());
+                animalGenotypeLabel.setText("Genotype: " + selectedAnimal.getGenome());
+                animalActiveGeneLabel.setText("Used genome index: " + selectedAnimal.getGenome().getCurrentGenomeIndex());
+                animalEatenPlantsLabel.setText("Plants eaten: " + selectedAnimal.getPlantsEatenCount());
+                animalDescendantsLabel.setText("Descendant count: " + selectedAnimal.getDescendantCount());
+                animalAgeLabel.setText("Age: " + selectedAnimal.getAge());
             }
         });
     }
@@ -228,14 +228,14 @@ public class SimulationView extends HBox {
 
     public void runSimulation() {
         while (running) {
-            if (!paused && simulation.step()) {
+            if (!paused && simulation.step()) { // a jeśli jest zapauzowana? to busy-wait?
                 Platform.runLater(this::draw);
             }
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
+                Thread.currentThread().interrupt(); // jaki jest sens wysyłać interrupt sobie samemu?
+                break; // nie wygodniej by było złapać ten wyjątek poza pętlą?
             }
         }
     }

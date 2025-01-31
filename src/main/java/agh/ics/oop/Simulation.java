@@ -54,6 +54,7 @@ public class Simulation {
 
     /**
      * Wykonuje jeden dzień symulacji.
+     *
      * @return true, jeśli symulacja powinna trwać dalej, false, jeśli osiągnięto docelowy dzień.
      */
     public boolean step() {
@@ -71,7 +72,7 @@ public class Simulation {
         worldMap.feedAnimals(plantEnergy);
 
         // 4. Rozmnażanie zwierząt
-        worldMap.breeding(sufficientEnergy, breedingEnergyLoss, currentDay, mutationCount);
+        worldMap.breeding(sufficientEnergy, breedingEnergyLoss, currentDay, mutationCount); // czemu mapa nie trzyma ustawień?
 
         // 5. Wzrost roślin
         worldMap.growGrass(dailyPlantCount);
@@ -95,5 +96,7 @@ public class Simulation {
         return currentDay;
     }
 
-    public int getSufficientEnergy(){return sufficientEnergy;}
+    public int getSufficientEnergy() {
+        return sufficientEnergy;
+    }
 }

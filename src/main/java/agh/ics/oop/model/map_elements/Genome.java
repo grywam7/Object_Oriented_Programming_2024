@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Random;
 
 public class Genome {
-    List<Integer> list = new ArrayList<>();
-    int currentGenomeIndex = 0;
-    public static final Random random = new Random();
+    List<Integer> list = new ArrayList<>(); // modyfikator dostępu?
+    int currentGenomeIndex = 0; // modyfikator dostępu?
+    public static final Random random = new Random(); // public?
 
     public Genome(int genomeLength) {
         for (int i = 0; i < genomeLength; i++) {
@@ -25,15 +25,15 @@ public class Genome {
         return this.currentGenomeIndex;
     }
 
-    public void setGenome(List<Integer> genome) {
+    public void setGenome(List<Integer> genome) { // Panowie już wiedzą co
         this.list = genome;
     }
 
-    public List<Integer> getList() {
-        return list;
+    public List<Integer> getList() { // nazwa
+        return list; // dehermetyzacja... gdyby nie to, że i tak mamy publiczny setter
     }
 
-    public int getLength(){
+    public int getLength() {
         return list.size();
     }
 

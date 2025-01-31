@@ -43,8 +43,9 @@ public abstract class AbstractWorldMap implements WorldMap {
             int randomX = random.nextInt(mapEdges.getWidth()) + mapEdges.bottomLeft().getX();
             int randomY = random.nextInt(mapEdges.getHeight()) + mapEdges.bottomLeft().getY();
             Animal animal = new Animal(new Vector2d(randomX, randomY), animalsEnergy);
-            if (animalModification) {animal.setGenome(new CrazyGenome(genomeLength));}
-            else animal.setGenome(new Genome(genomeLength));
+            if (animalModification) {
+                animal.setGenome(new CrazyGenome(genomeLength));
+            } else animal.setGenome(new Genome(genomeLength));
             placeAnimal(animal);
         }
     }
@@ -88,7 +89,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     public void growGrass(int numberOfGrass) {
-        Random random = new Random();
+        Random random = new Random(); // nowy obiekt co wywołanie?
         List<Vector2d> priorityPlaces = getPriorityPlaces();
         List<Vector2d> nonPriorityPlaces = getNonPriorityPlaces(priorityPlaces);
 
@@ -103,11 +104,11 @@ public abstract class AbstractWorldMap implements WorldMap {
                 // Losujemy pozycję z niepriorytetowych miejsc
                 Vector2d position = nonPriorityPlaces.remove(random.nextInt(nonPriorityPlaces.size()));
                 placeGrass(position);
-            }
+            } // a jeśli nonPriority jest puste, ale priority nie?
         }
     }
 
-    public void breeding(int reproductionEnergy, int energyLoss, int currentDay, int mutationCount ) {
+    public void breeding(int reproductionEnergy, int energyLoss, int currentDay, int mutationCount) { // nazwa
         for (Vector2d position : animals.keySet()) {
             HashSet<Animal> animalSet = animals.get(position);
             if (animalSet.size() < 2) continue; // Za mało zwierząt na rozmnażanie
@@ -129,13 +130,14 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
     }
 
-    public void incrementAgeForAllAnimals() {
+    public void incrementAgeForAllAnimals() {  // czy to zadanie dla mapy?
         for (Map.Entry<Vector2d, HashSet<Animal>> entry : animals.entrySet()) {
             for (Animal animal : entry.getValue()) {
                 animal.incrementAge();
             }
         }
     }
+
     public void feedAnimals(int plantEnergyValue) {
         List<Vector2d> grassPositionsToRemove = new ArrayList<>();
 
@@ -165,7 +167,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
     }
 
-    public void applyEnergyLossToAllAnimals(int energyLoss) {
+    public void applyEnergyLossToAllAnimals(int energyLoss) {  // czy to zadanie dla mapy?
         for (Map.Entry<Vector2d, HashSet<Animal>> entry : animals.entrySet()) {
             for (Animal animal : entry.getValue()) {
                 animal.energyLoss(energyLoss);
@@ -199,7 +201,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         return deadAnimalsCount == 0 ? 0 : (float) deadAnimalsLifespan / deadAnimalsCount;
     }
 
-    public List<Map.Entry<String, Integer>> printTopGenotypes() {
+    public List<Map.Entry<String, Integer>> printTopGenotypes() { // nazwa
         // Mapa do przechowywania liczby wystąpień każdego genotypu
         Map<String, Integer> genotypeCounts = new HashMap<>();
 

@@ -20,7 +20,7 @@ class AnimalTest {
 
         // Use a fixed-size genome for testing
         testGenome = new Genome(8);
-        testGenome.setGenome(java.util.Arrays.asList(0,1,2,3,4,5,6,7));
+        testGenome.setGenome(java.util.Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7));
 
         // Provide the Animal a genome so getCurrentGenomeMove can work
         animal.setGenome(testGenome);
