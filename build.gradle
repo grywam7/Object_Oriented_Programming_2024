@@ -6,6 +6,8 @@ plugins {
     id 'org.beryx.jlink' version '2.25.0'
 }
 
+
+
 group 'org.example'
 version '1.0-SNAPSHOT'
 
@@ -25,7 +27,8 @@ tasks.withType(JavaCompile) {
 }
 
 application {
-    getMainClass().set('agh.ics.oop.SimulationLauncher')
+    mainModule = 'agh.ics.oop'
+    mainClass = 'agh.ics.oop.SimulationLauncher'
 }
 
 javafx {
