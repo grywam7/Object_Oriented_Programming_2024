@@ -25,7 +25,7 @@ tasks.withType(JavaCompile) {
 }
 
 application {
-    getMainClass().set('agh.ics.oop.World')
+    getMainClass().set('agh.ics.oop.SimulationLauncher')
 }
 
 javafx {
