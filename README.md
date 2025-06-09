@@ -7,3 +7,6 @@ During the class, we created a simulation of animals on a specific map. Animals 
 Plants appear randomly and animals move randomly.
 Before starting the simulation, we fill in its parameters, then it continues until all the animals die.
 At any time, we can see the statistics of each animal, and the entire simulation.
+## Authors
+- Stanisław Brzozowski
+- Filip Żołnierczyk
